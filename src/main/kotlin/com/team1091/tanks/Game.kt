@@ -1,0 +1,102 @@
+package com.team1091.tanks
+
+import com.team1091.tanks.entity.Pickup
+import com.team1091.tanks.entity.Projectile
+import com.team1091.tanks.entity.Tank
+import kotlin.math.cos
+import kotlin.math.max
+import kotlin.math.min
+import kotlin.math.sin
+
+class Game(
+    val tanks: List<Tank>,
+    val projectiles: MutableList<Projectile> = mutableListOf(),
+    val pickups: MutableList<Pickup> = mutableListOf()
+) {
+
+    var currentTime = 0.0
+
+    fun takeTurn(dt: Double) {
+        currentTime += dt
+        // tanks ai processes
+        tanks.forEach { tank ->
+
+            val control = tank.ai.act(
+                Sensor(
+                    targets = tanks.filter { it != tank },
+                    projectiles = projectiles.toList(),
+                    pickups = pickups.toList()
+                ),
+                tank
+            )
+
+            // apply control
+            // turn
+            tank.facing += control.turn.limit() * TANK_TURN_RATE * dt
+
+            // turn turret speed
+            tank.turretAngle += control.turnTurret.limit() * TURRET_TURN_RATE * dt
+
+            // drive
+            tank.pos = Vec2(
+                tank.pos.x + cos(tank.facing) * control.forward.limit() * TANK_SPEED * dt,
+                tank.pos.y + sin(tank.facing) * control.forward.limit() * TANK_SPEED * dt
+            )
+
+            // fire
+            // spawn bullet
+            if (control.fire && tank.ammoCount > 0 && tank.lastFired + TIME_TO_FIRE < currentTime ) {
+                // calculate barrel position
+                val barrelEnd = Vec2(
+                    tank.pos.x + cos(tank.facing + tank.turretAngle) * TANK_BARREL_LENGTH,
+                    tank.pos.y + sin(tank.facing + tank.turretAngle) * TANK_BARREL_LENGTH
+                )
+                projectiles.add(
+                    Projectile(pos = barrelEnd, facing = tank.facing + tank.turretAngle)
+                )
+                tank.ammoCount--
+                tank.lastFired = currentTime
+            }
+
+            if (control.collect) {
+                // grab any pickups we are on
+                val pickedUp = pickups.filter { it.pos.distanceTo(tank.pos) < TANK_PICKUP_RADIUS }
+                tank.ammoCount += pickedUp.size
+                pickups.removeAll(pickedUp)
+            }
+
+        }
+
+        val projectilesToRemove = mutableListOf<Projectile>()
+        projectiles.forEach {
+
+            val newPos = Vec2(
+                it.pos.x + (dt * PROJECTILE_VELOCITY * cos(it.facing)),
+                it.pos.y + (dt * PROJECTILE_VELOCITY * sin(it.facing))
+            )
+
+            val tanksInRange = tanks.filter { tank -> it.pos.distanceTo(tank.pos) < TANK_RADIUS }
+
+            if (tanksInRange.isNotEmpty()) {
+                tanksInRange.forEach {
+                    it.life--
+                }
+                projectilesToRemove.add(it)
+            }
+            it.pos = newPos
+        }
+
+        projectiles.removeAll(projectilesToRemove)
+
+
+    }
+
+
+    fun isNotDone(): Boolean {
+        return tanks.count { it.life > 0 } <= 1
+    }
+}
+
+private fun Double.limit(): Double {
+    return max(-1.0, min(1.0, this))
+}

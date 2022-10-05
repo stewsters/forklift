@@ -15,12 +15,11 @@ class TankSim : PApplet() {
 
     lateinit var game: Game
 
-    override fun settings() {
-        size(xSize.toInt(), ySize.toInt())
-    }
+    private val size = Vec2(800.0, 800.0)
 
-    private val xSize = 800.0
-    private val ySize = 800.0
+    override fun settings() {
+        size(size.x.toInt(), size.y.toInt())
+    }
 
     override fun setup() {
         tankImage = loadImage("tank.png")
@@ -29,9 +28,10 @@ class TankSim : PApplet() {
         pickupImage = loadImage("pickup.png")
 
         game = Game(
+            bounds = size,
             tanks = listOf(
                 Tank(
-                    ai = TestAi(this),
+                    ai = TestAi(),
                     life = 10,
                     pos = Vec2(100.0, 100.0),
                     facing = 0.0,
@@ -39,9 +39,9 @@ class TankSim : PApplet() {
                 ),
 
                 Tank(
-                    ai = TestAi(this),
+                    ai = TestAi(),
                     life = 10,
-                    pos = Vec2(xSize - 100.0, ySize - 100.0),
+                    pos = Vec2(size.x - 100.0, size.y - 100.0),
                     facing = Math.PI,
                     ammoCount = 5
                 )
@@ -49,8 +49,8 @@ class TankSim : PApplet() {
             pickups = (0..100).map {
                 Pickup(
                     Vec2(
-                        x = random(xSize.toFloat()).toDouble(),
-                        y = random(ySize.toFloat()).toDouble()
+                        x = random(size.x.toFloat()).toDouble(),
+                        y = random(size.y.toFloat()).toDouble()
                     )
                 )
             }.toMutableList()

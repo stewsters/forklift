@@ -9,6 +9,7 @@ import kotlin.math.min
 import kotlin.math.sin
 
 class Game(
+    val bounds: Vec2,
     val tanks: List<Tank>,
     val projectiles: MutableList<Projectile> = mutableListOf(),
     val pickups: MutableList<Pickup> = mutableListOf()
@@ -45,7 +46,7 @@ class Game(
 
             // fire
             // spawn bullet
-            if (control.fire && tank.ammoCount > 0 && tank.lastFired + TIME_TO_FIRE < currentTime ) {
+            if (control.fire && tank.ammoCount > 0 && tank.lastFired + TIME_TO_FIRE < currentTime) {
                 // calculate barrel position
                 val barrelEnd = Vec2(
                     tank.pos.x + cos(tank.facing + tank.turretAngle) * TANK_BARREL_LENGTH,
@@ -75,22 +76,22 @@ class Game(
                 it.pos.y + (dt * PROJECTILE_VELOCITY * sin(it.facing))
             )
 
-            val tanksInRange = tanks.filter { tank -> it.pos.distanceTo(tank.pos) < TANK_RADIUS }
+            val tanksInRange = tanks.filter { tank -> newPos.distanceTo(tank.pos) < TANK_RADIUS }
 
             if (tanksInRange.isNotEmpty()) {
                 tanksInRange.forEach {
                     it.life--
                 }
                 projectilesToRemove.add(it)
+            } else if (newPos.x < 0 || newPos.x > bounds.x || newPos.y < 0 || newPos.y > bounds.y) {
+                projectilesToRemove.add(it)
             }
+
             it.pos = newPos
         }
 
         projectiles.removeAll(projectilesToRemove)
-
-
     }
-
 
     fun isNotDone(): Boolean {
         return tanks.count { it.life > 0 } <= 1

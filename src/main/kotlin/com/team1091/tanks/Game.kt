@@ -46,9 +46,11 @@ class Game(
             tank.turretFacing += control.turnTurret.limit() * TURRET_TURN_RATE * dt
 
             // drive
+            val speedModifier = (if (control.collect) TANK_VACUUM_SLOW * TANK_SPEED else TANK_SPEED)
+
             tank.pos = Vec2(
-                tank.pos.x + cos(tank.facing) * control.forward.limit() * TANK_SPEED * dt,
-                tank.pos.y + sin(tank.facing) * control.forward.limit() * TANK_SPEED * dt
+                tank.pos.x + cos(tank.facing) * control.forward.limit() * speedModifier * dt,
+                tank.pos.y + sin(tank.facing) * control.forward.limit() * speedModifier * dt
             )
 
             // fire

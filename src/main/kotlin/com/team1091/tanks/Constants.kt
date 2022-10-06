@@ -1,5 +1,6 @@
 package com.team1091.tanks
 
+const val TANK_MAX_LIFE = 4
 const val TIME_TO_FIRE = 2.0
 const val TANK_BARREL_LENGTH = 9.0
 const val TANK_PICKUP_RADIUS = 8.0

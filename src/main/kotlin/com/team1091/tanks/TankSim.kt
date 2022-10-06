@@ -32,7 +32,7 @@ class TankSim : PApplet() {
             tanks = mutableListOf(
                 Tank(
                     ai = TestAi(),
-                    life = 10,
+                    life = TANK_MAX_LIFE,
                     pos = Vec2(100.0, 100.0),
                     facing = 0.0,
                     ammoCount = 5
@@ -40,7 +40,7 @@ class TankSim : PApplet() {
 
                 Tank(
                     ai = TestAi(),
-                    life = 10,
+                    life = TANK_MAX_LIFE,
                     pos = Vec2(size.x - 100.0, size.y - 100.0),
                     facing = Math.PI,
                     ammoCount = 5

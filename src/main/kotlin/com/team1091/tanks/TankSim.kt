@@ -68,7 +68,7 @@ class TankSim : PApplet() {
             rotate((tank.facing + Math.PI.toFloat() / 2.0).toFloat())
             image(tankImage, 0f, 0f)
 
-            rotate(tank.turretAngle.toFloat())
+            rotate(tank.turretFacing.toFloat())
             image(turretImage, 0f, 0f)
 
             popMatrix()

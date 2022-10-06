@@ -36,7 +36,7 @@ class Game(
             tank.facing += control.turn.limit() * TANK_TURN_RATE * dt
 
             // turn turret speed
-            tank.turretAngle += control.turnTurret.limit() * TURRET_TURN_RATE * dt
+            tank.turretFacing += control.turnTurret.limit() * TURRET_TURN_RATE * dt
 
             // drive
             tank.pos = Vec2(
@@ -49,11 +49,11 @@ class Game(
             if (control.fire && tank.ammoCount > 0 && tank.lastFired + TIME_TO_FIRE < currentTime) {
                 // calculate barrel position
                 val barrelEnd = Vec2(
-                    tank.pos.x + cos(tank.facing + tank.turretAngle) * TANK_BARREL_LENGTH,
-                    tank.pos.y + sin(tank.facing + tank.turretAngle) * TANK_BARREL_LENGTH
+                    tank.pos.x + cos(tank.facing + tank.turretFacing) * TANK_BARREL_LENGTH,
+                    tank.pos.y + sin(tank.facing + tank.turretFacing) * TANK_BARREL_LENGTH
                 )
                 projectiles.add(
-                    Projectile(pos = barrelEnd, facing = tank.facing + tank.turretAngle)
+                    Projectile(pos = barrelEnd, facing = tank.facing + tank.turretFacing)
                 )
                 tank.ammoCount--
                 tank.lastFired = currentTime

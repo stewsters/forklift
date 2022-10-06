@@ -8,7 +8,7 @@ class Tank(
     var life: Int,
     var pos: Vec2,
     var facing : Double,
-    var turretAngle: Double = 0.0,
+    var turretFacing: Double = 0.0,
     var ammoCount: Int = 0,
     var lastFired: Double = 0.0
 )

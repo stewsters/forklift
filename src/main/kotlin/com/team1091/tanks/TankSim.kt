@@ -1,6 +1,7 @@
 package com.team1091.tanks
 
 import com.team1091.tanks.ai.TestAi
+import com.team1091.tanks.ai.TestAiJava
 import com.team1091.tanks.entity.Pickup
 import com.team1091.tanks.entity.Tank
 import processing.core.PApplet
@@ -29,7 +30,7 @@ class TankSim : PApplet() {
 
         game = Game(
             bounds = size,
-            tanks = listOf(
+            tanks = mutableListOf(
                 Tank(
                     ai = TestAi(),
                     life = 10,

@@ -10,7 +10,7 @@ import kotlin.math.sin
 
 class Game(
     val bounds: Vec2,
-    val tanks: List<Tank>,
+    val tanks: MutableList<Tank>,
     val projectiles: MutableList<Projectile> = mutableListOf(),
     val pickups: MutableList<Pickup> = mutableListOf()
 ) {
@@ -20,7 +20,14 @@ class Game(
     fun takeTurn(dt: Double) {
         currentTime += dt
         // tanks ai processes
+        val tanksToRemove = mutableListOf<Tank>()
         tanks.forEach { tank ->
+
+            if (tank.life <= 0) {
+                // You are dead, don't move
+                tanksToRemove.add(tank)
+                return@forEach
+            }
 
             val control = tank.ai.act(
                 Sensor(
@@ -65,8 +72,8 @@ class Game(
                 tank.ammoCount += pickedUp.size
                 pickups.removeAll(pickedUp)
             }
-
         }
+        tanks.removeAll(tanksToRemove)
 
         val projectilesToRemove = mutableListOf<Projectile>()
         projectiles.forEach {

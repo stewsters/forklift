@@ -26,4 +26,11 @@ data class Vec2(
         )
 
     }
+
+    operator fun times(scale: Double): Vec2 {
+        return Vec2(
+            x * scale,
+            y * scale
+        )
+    }
 }

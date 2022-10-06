@@ -7,8 +7,9 @@ const val TANK_PICKUP_RADIUS = 8.0
 const val TANK_RADIUS = 8.0
 const val TANK_SPEED = 8.0
 const val TANK_VACUUM_SLOW = 0.6
-const val TURRET_TURN_RATE = 1.0
 const val TANK_TURN_RATE = 1.0
+const val TANK_MAX_AMMO = 10
+const val TURRET_TURN_RATE = 1.0
 
 const val PROJECTILE_VELOCITY: Double = 30.0
 const val PROJECTILE_MAX_FLIGHT_TIME = 10.0

@@ -74,7 +74,9 @@ class Game(
 
             if (control.collect) {
                 // grab any pickups we are on
-                val pickedUp = pickups.filter { it.pos.distanceTo(tank.pos) < TANK_PICKUP_RADIUS }
+                val capacity = TANK_MAX_AMMO - tank.ammoCount
+                val pickedUp = pickups.filter { it.pos.distanceTo(tank.pos) < TANK_PICKUP_RADIUS }.take(capacity)
+
                 tank.ammoCount += pickedUp.size
                 pickups.removeAll(pickedUp)
             }

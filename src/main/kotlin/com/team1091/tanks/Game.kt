@@ -60,7 +60,11 @@ class Game(
                     tank.pos.y + sin(tank.facing + tank.turretFacing) * TANK_BARREL_LENGTH
                 )
                 projectiles.add(
-                    Projectile(pos = barrelEnd, facing = tank.facing + tank.turretFacing)
+                    Projectile(
+                        pos = barrelEnd,
+                        facing = tank.facing + tank.turretFacing,
+                        launchTime = currentTime
+                    )
                 )
                 tank.ammoCount--
                 tank.lastFired = currentTime
@@ -85,7 +89,7 @@ class Game(
 
             val tanksInRange = tanks.filter { tank -> newPos.distanceTo(tank.pos) < TANK_RADIUS }
 
-            if (tanksInRange.isNotEmpty()) {
+            if (tanksInRange.isNotEmpty() || it.launchTime + PROJECTILE_MAX_FLIGHT_TIME < currentTime) {
                 tanksInRange.forEach {
                     it.life--
                 }

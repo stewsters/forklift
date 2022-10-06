@@ -4,5 +4,6 @@ import com.team1091.tanks.Vec2
 
 class Projectile(
     var pos: Vec2,
-    var facing:Double
+    var facing:Double,
+    val launchTime:Double
 )

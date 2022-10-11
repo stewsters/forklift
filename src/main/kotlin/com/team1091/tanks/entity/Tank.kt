@@ -10,5 +10,6 @@ class Tank(
     var facing : Double,
     var turretFacing: Double = 0.0,
     var ammoCount: Int = 0,
-    var lastFired: Double = 0.0
+    var lastFired: Double = 0.0,
+    val faction: Faction
 )

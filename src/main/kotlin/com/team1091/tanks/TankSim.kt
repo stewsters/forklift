@@ -1,6 +1,7 @@
 package com.team1091.tanks
 
-import com.team1091.tanks.ai.TestAi
+import com.team1091.tanks.ai.AdrianTankAi
+import com.team1091.tanks.ai.Test76Ai
 import com.team1091.tanks.entity.Faction
 import com.team1091.tanks.entity.Pickup
 import com.team1091.tanks.entity.Tank
@@ -33,22 +34,39 @@ class TankSim : PApplet() {
             bounds = size,
             tanks = mutableListOf(
                 Tank(
-                    ai = TestAi(),
+                    ai = AdrianTankAi(),
                     life = TANK_MAX_LIFE,
                     pos = Vec2(100.0, 100.0),
                     facing = 0.0,
                     ammoCount = 5,
                     faction = Faction.RED
                 ),
-
                 Tank(
-                    ai = TestAi(),
+                    ai = Test76Ai(),
+                    life = TANK_MAX_LIFE,
+                    pos = Vec2( 100.0, size.y - 100.0),
+                    facing = 0.0,
+                    ammoCount = 5,
+                    faction = Faction.BLUE
+                ),
+                Tank(
+                    ai = Test76Ai(),
+                    life = TANK_MAX_LIFE,
+                    pos = Vec2(size.x - 100.0,  100.0),
+                    facing = Math.PI,
+                    ammoCount = 5,
+                    faction = Faction.GREEN
+                ),
+                Tank(
+                    ai = Test76Ai(),
                     life = TANK_MAX_LIFE,
                     pos = Vec2(size.x - 100.0, size.y - 100.0),
                     facing = Math.PI,
                     ammoCount = 5,
-                    faction = Faction.BLUE
+                    faction = Faction.PINK
                 )
+
+
             ),
             pickups = (0..100).map {
                 Pickup(

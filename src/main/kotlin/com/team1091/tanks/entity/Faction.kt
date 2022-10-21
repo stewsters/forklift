@@ -6,5 +6,7 @@ enum class Faction(
     val color: Color
 ) {
     RED(Color.RED),
-    BLUE(Color.BLUE)
+    BLUE(Color.BLUE),
+    GREEN(Color.GREEN),
+    PINK(Color.PINK)
 }

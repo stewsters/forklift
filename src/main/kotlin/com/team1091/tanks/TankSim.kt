@@ -50,7 +50,7 @@ class TankSim : PApplet() {
                     faction = Faction.BLUE
                 ),
                 Tank(
-                    ai = Test76Ai(),
+                    ai = BestTankEver(),
                     life = TANK_MAX_LIFE,
                     pos = Vec2(size.x - 100.0,  100.0),
                     facing = Math.PI,

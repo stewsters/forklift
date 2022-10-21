@@ -29,14 +29,19 @@ class Game(
                 return@forEach
             }
 
-            val control = tank.ai.act(
-                Sensor(
-                    targets = tanks.filter { it != tank },
-                    projectiles = projectiles.toList(),
-                    pickups = pickups.toList()
-                ),
-                tank
-            )
+            val control = try {
+                tank.ai.act(
+                    Sensor(
+                        targets = tanks.filter { it != tank },
+                        projectiles = projectiles.toList(),
+                        pickups = pickups.toList()
+                    ),
+                    tank
+                )
+            } catch (e: Exception) {
+                e.printStackTrace()
+                Control(0.0, 0.0, 0.0, false, false)
+            }
 
             // apply control
             // turn

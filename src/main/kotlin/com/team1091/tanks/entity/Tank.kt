@@ -12,4 +12,6 @@ class Tank(
     var ammoCount: Int = 0,
     var lastFired: Double = 0.0,
     val faction: Faction
-)
+){
+    val displayName = ai.toString().substringBefore('@').substringAfterLast('.')
+}

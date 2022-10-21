@@ -7,6 +7,7 @@ import kotlin.math.cos
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.sin
+import kotlin.random.Random
 
 class Game(
     val bounds: Vec2,
@@ -53,10 +54,15 @@ class Game(
             // drive
             val speedModifier = (if (control.collect) TANK_VACUUM_SLOW * TANK_SPEED else TANK_SPEED)
 
-            tank.pos = Vec2(
+            val newPos = Vec2(
                 tank.pos.x + cos(tank.facing) * control.forward.limit() * speedModifier * dt,
                 tank.pos.y + sin(tank.facing) * control.forward.limit() * speedModifier * dt
             )
+
+            // Dont let tanks leave
+            if (newPos.x >= 0 && newPos.x <= bounds.x && newPos.y >= 0 && newPos.y <= bounds.y) {
+                tank.pos = newPos
+            }
 
             // fire
             // spawn bullet
@@ -111,6 +117,17 @@ class Game(
         }
 
         projectiles.removeAll(projectilesToRemove)
+
+        if (pickups.size < 30) {
+            pickups.add(
+                Pickup(
+                    Vec2(
+                        x = Random.nextDouble(bounds.x),
+                        y = Random.nextDouble(bounds.y)
+                    )
+                )
+            )
+        }
     }
 
     fun isNotDone(): Boolean {

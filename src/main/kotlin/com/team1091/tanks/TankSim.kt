@@ -9,6 +9,7 @@ import com.team1091.tanks.entity.Tank
 import processing.core.PApplet
 import processing.core.PImage
 import java.awt.Color
+import kotlin.random.Random
 
 class TankSim : PApplet() {
 
@@ -71,8 +72,8 @@ class TankSim : PApplet() {
             pickups = (0..100).map {
                 Pickup(
                     Vec2(
-                        x = random(size.x.toFloat()).toDouble(),
-                        y = random(size.y.toFloat()).toDouble()
+                        x = Random.nextDouble(size.x),
+                        y = Random.nextDouble(size.y)
                     )
                 )
             }.toMutableList()
@@ -88,6 +89,9 @@ class TankSim : PApplet() {
             tint(tank.faction.color.rgb)
             pushMatrix()
             translate(tank.pos.x.toFloat(), tank.pos.y.toFloat())
+
+            text(tank.displayName, -30f, -10f)
+            text(  "${tank.life} / ${tank.ammoCount}", -15f, 20f)
             rotate((tank.facing + Math.PI.toFloat() / 2.0).toFloat())
             image(tankImage, 0f, 0f)
             tint(Color.WHITE.rgb)

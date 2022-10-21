@@ -18,14 +18,16 @@ class Test76Ai() : AI {
             //turn = if (closest.y > 0) 1.0 else -1.0
             turn = turnto(closestpickup.pos - tank.pos, tank.facing)
         }
-        val turret = turnto(closesttank!!.pos - tank.pos, tank.facing + tank.turretFacing)
-
+        var turret = 0.0
+        if (closesttank != null) {
+            turret = turnto(closesttank.pos - tank.pos, tank.facing + tank.turretFacing)
+        }
         return Control(
             forward = 1.0,
             turn = turn,
             turnTurret = turret,
-            fire = closesttank.pos.distanceTo(tank.pos) < 30000,
-            collect = closestpickup!!.pos.distanceTo(tank.pos) < 5
+            fire = (closesttank?.pos?.distanceTo(tank.pos) ?: Double.MAX_VALUE) < 30000,
+            collect = closestpickup?.pos?.distanceTo(tank.pos) ?: Double.MAX_VALUE < 5
         )
     }
 

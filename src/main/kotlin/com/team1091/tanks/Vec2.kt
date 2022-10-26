@@ -33,4 +33,9 @@ data class Vec2(
             y * scale
         )
     }
+
+    // Dot product
+    operator fun times(other: Vec2): Double {
+        return x * other.x + y * other.y
+    }
 }

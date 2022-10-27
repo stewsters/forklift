@@ -8,5 +8,6 @@ enum class Faction(
     RED(Color.RED),
     BLUE(Color.BLUE),
     GREEN(Color.GREEN),
-    PINK(Color.PINK)
+    PINK(Color.PINK),
+    PURPLE(Color.MAGENTA)
 }

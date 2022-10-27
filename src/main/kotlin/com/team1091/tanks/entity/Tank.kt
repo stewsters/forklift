@@ -5,7 +5,7 @@ import com.team1091.tanks.ai.AI
 
 class Tank(
     val ai: AI,
-    var life: Int,
+    var life: Double,
     var pos: Vec2,
     var facing : Double,
     var turretFacing: Double = 0.0,

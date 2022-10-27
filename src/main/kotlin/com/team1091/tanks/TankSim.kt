@@ -2,6 +2,7 @@ package com.team1091.tanks
 
 import com.team1091.tanks.ai.AdrianTankAi
 import com.team1091.tanks.ai.BraedenTankAi
+import com.team1091.tanks.ai.Mary
 import com.team1091.tanks.ai.Test76Ai
 import com.team1091.tanks.entity.Faction
 import com.team1091.tanks.entity.Pickup
@@ -66,6 +67,14 @@ class TankSim : PApplet() {
                     facing = Math.PI,
                     ammoCount = 5,
                     faction = Faction.PINK
+                ),
+                Tank(
+                    ai = Mary(),
+                    life = TANK_MAX_LIFE,
+                    pos = Vec2(250.0, 250.0),
+                    facing = Math.PI,
+                    ammoCount = 5,
+                    faction = Faction.PURPLE
                 )
 
             ),

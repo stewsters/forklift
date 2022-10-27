@@ -16,8 +16,7 @@ public class BestTankEver implements AI {
 
         boolean isCollecting = true;
         boolean isShooting = false;
-        boolean isAdvancing = false;
-        int range = 300;
+        int range = 200;
 
         var tankRotation = tank.getFacing();
         var tankPosition = tank.getPos();
@@ -30,7 +29,7 @@ public class BestTankEver implements AI {
         var targetPosition = closestPickup.get().getPos();
         var relativeAmmoPosition = targetPosition.minus(tankPosition).rotate(-tankRotation);
         var turnToAmmo = (relativeAmmoPosition.getY() > 0) ? 1 : -1;
-        var collect = (tankPosition.distanceTo(targetPosition) <= 1);
+        var collect = (tankPosition.distanceTo(targetPosition) <= 2);
 
         var
                 enemy =
@@ -41,17 +40,20 @@ public class BestTankEver implements AI {
         var relativeTankPosition = enemyPosition.minus(tankPosition).rotate(-(tankRotation + tank.getTurretFacing()));
         var aimAtEnemy = (relativeTankPosition.getY() > 0) ? 1 : -1;
 
-        var relativeTurretPosition = enemyPosition.minus(tankPosition).rotate(-tankRotation);
-        var turnToEnemy = (relativeTurretPosition.getY() > 0) ? 1 : -1;
+        var relativeEnemyPosition = enemyPosition.minus(tankPosition).rotate(-tankRotation);
+        var turnToEnemy = (relativeEnemyPosition.getY() > 0) ? 1 : -1;
 
-        if (ammoAmount == 10) {
-            if (enemy.get().getPos().distanceTo(tank.getPos()) <= range) {
-                isCollecting = false;
-                isShooting = true;
-            }
+        if (ammoAmount == 0){
+            isCollecting = true;
+        }
+        if (enemy.get().getPos().distanceTo(tank.getPos()) <= range && ammoAmount > 0) {
+            isCollecting = false;
+            isShooting = true;
+        }else if (ammoAmount == 10) {
+            isCollecting = false;
         }
         return new Control(
-                isShooting ? 0 : 1.0,
+                isShooting ? 1 : 1.0,
                 isCollecting ? turnToAmmo : turnToEnemy,
                 aimAtEnemy,
                 isShooting,

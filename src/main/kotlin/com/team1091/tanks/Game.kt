@@ -118,7 +118,7 @@ class Game(
 
         projectiles.removeAll(projectilesToRemove)
 
-        if (pickups.size < 30) {
+        if (pickups.size < MIN_PICKUPS) {
             pickups.add(
                 Pickup(
                     Vec2(

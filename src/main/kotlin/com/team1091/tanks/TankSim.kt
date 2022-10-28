@@ -32,43 +32,31 @@ class TankSim : PApplet() {
         shellImage = loadImage("shell.png")
         pickupImage = loadImage("pickup.png")
 
+        // Add your tank here
+        val ais = listOf(
+            AdrianTankAi(),
+            EthanTankAi(),
+            BestTankEver(),
+            BraedenTankAi()
+        )
+
+        val rotation = Random.nextDouble(Math.PI * 2)
         game = Game(
             bounds = size,
-            tanks = mutableListOf(
+            tanks = ais.shuffled().mapIndexed { i, ai ->
+                val angle = rotation + (i * (Math.PI * 2) / (ais.size))
                 Tank(
-                    ai = AdrianTankAi(),
+                    ai = ai,
                     life = TANK_MAX_LIFE,
-                    pos = Vec2(100.0, 100.0),
-                    facing = 0.0,
+                    pos = Vec2(
+                        START_RADIUS * Math.cos(angle) + size.x / 2,
+                        START_RADIUS * Math.sin(angle) + size.y / 2
+                    ),
+                    facing = angle + Math.PI / 2,
                     ammoCount = 5,
-                    faction = Faction.RED
-                ),
-                Tank(
-                    ai = EthanTankAi(),
-                    life = TANK_MAX_LIFE,
-                    pos = Vec2( 100.0, size.y - 100.0),
-                    facing = 0.0,
-                    ammoCount = 5,
-                    faction = Faction.BLUE
-                ),
-                Tank(
-                    ai = BestTankEver(),
-                    life = TANK_MAX_LIFE,
-                    pos = Vec2(size.x - 100.0,  100.0),
-                    facing = Math.PI,
-                    ammoCount = 5,
-                    faction = Faction.GREEN
-                ),
-                Tank(
-                    ai = BraedenTankAi(),
-                    life = TANK_MAX_LIFE,
-                    pos = Vec2(size.x - 100.0, size.y - 100.0),
-                    facing = Math.PI,
-                    ammoCount = 5,
-                    faction = Faction.PINK
+                    faction = Faction.values()[i]
                 )
-
-            ),
+            }.toMutableList(),
             pickups = (0..100).map {
                 Pickup(
                     Vec2(
@@ -81,7 +69,7 @@ class TankSim : PApplet() {
     }
 
     override fun draw() {
-        game.takeTurn(0.1)
+        game.takeTurn(SECONDS_PER_FRAME)
 
         clear()
         imageMode(CENTER)
@@ -91,7 +79,7 @@ class TankSim : PApplet() {
             translate(tank.pos.x.toFloat(), tank.pos.y.toFloat())
 
             text(tank.displayName, -30f, -10f)
-            text(  "${tank.life} / ${tank.ammoCount}", -15f, 20f)
+            text("${tank.life} / ${tank.ammoCount}", -15f, 20f)
             rotate((tank.facing + Math.PI.toFloat() / 2.0).toFloat())
             image(tankImage, 0f, 0f)
             tint(Color.WHITE.rgb)

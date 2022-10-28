@@ -9,6 +9,7 @@ import com.team1091.tanks.TANK_MAX_AMMO
 import com.team1091.tanks.TANK_PICKUP_RADIUS
 import com.team1091.tanks.Vec2
 import com.team1091.tanks.entity.Tank
+import com.team1091.tanks.turnLeftOrRight
 import kotlin.math.abs
 import kotlin.math.sqrt
 
@@ -103,24 +104,6 @@ class AdrianTankAi : AI {
             one
         } else {
             two
-        }
-    }
-
-    fun turnLeftOrRight(current: Double, target: Double): Double {
-        val alpha = target - current
-        val beta = target - current + Math.PI * 2
-        val gamma = target - current - Math.PI * 2
-
-        val alphaAbs = abs(alpha)
-        val betaAbs = abs(beta)
-        val gammaAbs = abs(gamma)
-
-        return if (alphaAbs <= betaAbs && alphaAbs <= gammaAbs) {
-            alpha
-        } else if (beta <= alphaAbs && beta <= gammaAbs) {
-            beta
-        } else {
-            gamma
         }
     }
 

@@ -3,7 +3,12 @@ package com.team1091.tanks
 import kotlin.math.abs
 import kotlin.math.sqrt
 
-// Given a current angle, find out how to turn to target angle.
+/**
+ * Given a current angle, find out how to turn to target angle.
+ *  @param current The angle you are at in radians
+ *  @param target The angle you want to turn to in radians
+ *  @return the turn (positive is left, negative is right)
+ */
 fun turnLeftOrRight(current: Double, target: Double): Double {
     val alpha = target - current
     val beta = target - current + Math.PI * 2
@@ -22,7 +27,9 @@ fun turnLeftOrRight(current: Double, target: Double): Double {
     }
 }
 
-// Allows you to calculate an intercept course
+/**
+ * Allows you to calculate an intercept course
+  */
 fun calculateAimPoint(
     targetPos: Vec2,
     targetVel: Vec2,

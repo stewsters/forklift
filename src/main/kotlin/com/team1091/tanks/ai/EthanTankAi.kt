@@ -17,15 +17,15 @@ class EthanTankAi() : AI {
 
         var turn = 0.0
 
-        if (closestbullet!=null && (closestbullet.pos.distanceTo(tank.pos)) < 40){
-            turn = turnLeftOrRight(tank.facing, closestbullet.facing + Math.PI/2)
+        if (closestbullet != null && (closestbullet.pos.distanceTo(tank.pos)) < 40) {
+            turn = turnLeftOrRight(tank.facing, closestbullet.facing + Math.PI / 2)
 
 
-        } else if (closestpickup != null && tank.ammoCount<10) {
+        } else if (closestpickup != null && tank.ammoCount < 10) {
             //val closest = (closestpickup.pos - tank.pos).rotate(-tank.facing)
             //turn = if (closest.y > 0) 1.0 else -1.0
             turn = turnto(closestpickup.pos - tank.pos, tank.facing)
-        }else if(closesttank!=null){
+        } else if (closesttank != null) {
             turn = turnto(closesttank.pos - tank.pos, tank.facing)
         }
 

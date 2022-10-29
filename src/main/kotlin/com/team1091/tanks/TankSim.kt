@@ -43,6 +43,7 @@ class TankSim : PApplet() {
 
         // Add your tank here
         val ais = listOf(
+//            DoNothingAi(),
             AdrianTankAi(),
             EthanTankAi(),
             BestTankEver(),

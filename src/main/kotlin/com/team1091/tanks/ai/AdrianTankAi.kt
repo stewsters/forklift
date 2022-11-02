@@ -85,7 +85,10 @@ class AdrianTankAi : AI {
                 }
             } else {
                 targetIntercept = closestEnemy.pos
-                turnTurret = driveTowards(closestEnemy.pos - tank.pos, tank.facing + tank.turretFacing)
+                turnTurret = driveTowards(
+                    closestEnemy.pos - tank.pos,
+                    tank.facing + tank.turretFacing
+                ) - (turn * 0.1 * TANK_TURN_RATE)
             }
         }
 
@@ -140,7 +143,7 @@ class AdrianTankAi : AI {
             return 1.0
         }
         // need to figure out if the intersection point is ahead or behind us
-        return if (intersection.rotate(-tankFacing).x > 0) 1.0 else -1.0
+        return if ((intersection - tankPos).rotate(-tankFacing).x < 0) 1.0 else -1.0
     }
 
     companion object {

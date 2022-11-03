@@ -17,8 +17,8 @@ class EthanTankAi() : AI {
 
         var turn = 0.0
 
-        if (closestbullet != null && (closestbullet.pos.distanceTo(tank.pos)) < 40) {
-            turn = turnLeftOrRight(tank.facing, closestbullet.facing + Math.PI / 2)
+        if (closestbullet != null && (closestbullet.pos.distanceTo(tank.pos)) < 50) {
+            turn = turnLeftOrRight(tank.facing, closestbullet.facing - Math.PI / 2)
 
 
         } else if (closestpickup != null && tank.ammoCount < 10) {
@@ -28,14 +28,19 @@ class EthanTankAi() : AI {
         } else if (closesttank != null) {
             turn = turnto(closesttank.pos - tank.pos, tank.facing)
         }
-
+        var speed = 0.0
+        if ( closestbullet!= null && (closestbullet.pos.distanceTo(tank.pos)) < 50) {
+            speed = -1.0
+        }else if (closestpickup!= null)
+                speed = 1.0
+        {}
 
         var turret = 0.0
         if (closesttank != null) {
             turret = turnto(closesttank.pos - tank.pos, tank.facing + tank.turretFacing)
         }
         return Control(
-            forward = 1.0,
+            forward = speed,
             turn = turn,
             turnTurret = turret,
             fire = (closesttank?.pos?.distanceTo(tank.pos) ?: Double.MAX_VALUE) < 300,

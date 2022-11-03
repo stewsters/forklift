@@ -118,7 +118,7 @@ class Game(
 
         projectiles.removeAll(projectilesToRemove)
 
-        if (pickups.size < 30) {
+        if (pickups.size < MIN_PICKUPS) {
             pickups.add(
                 Pickup(
                     Vec2(
@@ -131,7 +131,7 @@ class Game(
     }
 
     fun isNotDone(): Boolean {
-        return tanks.count { it.life > 0 } <= 1
+        return tanks.count { it.life > 0 } > 1
     }
 }
 

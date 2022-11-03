@@ -131,7 +131,7 @@ class Game(
     }
 
     fun isNotDone(): Boolean {
-        return tanks.count { it.life > 0 } <= 1
+        return tanks.count { it.life > 0 } > 1
     }
 }
 

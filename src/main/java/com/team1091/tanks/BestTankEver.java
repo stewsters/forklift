@@ -16,7 +16,8 @@ public class BestTankEver implements AI {
 
         boolean isCollecting = true;
         boolean isShooting = false;
-        int range = 200;
+        boolean isDodging;
+        int range = 300;
 
         var tankRotation = tank.getFacing();
         var tankPosition = tank.getPos();
@@ -36,12 +37,20 @@ public class BestTankEver implements AI {
                 sensor.getTargets()
                         .stream()
                         .min(Comparator.comparingDouble((it) -> it.getPos().distanceTo(tank.getPos())));
+        //var archNemesis = sensor.getTargets().stream().filter((tank)->tank.getAi().getClass().getName().contains("Adrian"));
         var enemyPosition = enemy.get().getPos();
         var relativeTankPosition = enemyPosition.minus(tankPosition).rotate(-(tankRotation + tank.getTurretFacing()));
         var aimAtEnemy = (relativeTankPosition.getY() > 0) ? 1 : -1;
 
         var relativeEnemyPosition = enemyPosition.minus(tankPosition).rotate(-tankRotation);
         var turnToEnemy = (relativeEnemyPosition.getY() > 0) ? 1 : -1;
+
+        var bullet =
+                sensor.getProjectiles()
+                        .stream()
+                        .min(Comparator.comparingDouble((it) -> it.getPos().distanceTo(tank.getPos())));
+        var relativeEnemyPositionTwo = enemyPosition.minus(tankPosition).rotate(-tankRotation-Math.PI/2);
+        var dodge = (relativeEnemyPositionTwo.getY() > 0) ? 1 : -1;
 
         if (ammoAmount == 0){
             isCollecting = true;
@@ -52,9 +61,14 @@ public class BestTankEver implements AI {
         }else if (ammoAmount == 10) {
             isCollecting = false;
         }
+        if(bullet.isPresent() && bullet.get().getPos().distanceTo(tank.getPos()) < 50){
+            isDodging = true;
+        }else{
+            isDodging = false;
+        }
         return new Control(
-                isShooting ? 1 : 1.0,
-                isCollecting ? turnToAmmo : turnToEnemy,
+                1,
+                isDodging ? dodge: isCollecting? turnToAmmo: turnToEnemy,
                 aimAtEnemy,
                 isShooting,
                 isCollecting ? collect : false

@@ -18,7 +18,8 @@ class RunSim {
             AdrianTankAi(),
             EthanTankAi(),
             BestTankEver(),
-            BraedenTankAi()
+            BraedenTankAi(),
+            Mary()
         )
 
         val winners = mutableMapOf<String, Int>()

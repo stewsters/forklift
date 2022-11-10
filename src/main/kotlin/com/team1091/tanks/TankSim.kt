@@ -52,7 +52,7 @@ class TankSim : PApplet() {
     }
 
     override fun draw() {
-        game.takeTurn(SECONDS_PER_FRAME)
+        game.takeTurn(1/SECONDS_PER_FRAME)
 
         clear()
         imageMode(PConstants.CORNER)
@@ -68,6 +68,8 @@ class TankSim : PApplet() {
             val rightF = Vec2(4.0, 6.0).rotate(tank.facing)
             val rightB = Vec2(-4.0, 6.0).rotate(tank.facing)
 
+            background.stroke(Color.DARK_GRAY.rgb)
+
             background.line(
                 (tank.pos.x + leftF.x).toFloat(), (tank.pos.y + leftF.y).toFloat(),
                 (tank.pos.x + leftB.x).toFloat(), (tank.pos.y + leftB.y).toFloat()
@@ -77,6 +79,7 @@ class TankSim : PApplet() {
                 (tank.pos.x + rightF.x).toFloat(), (tank.pos.y + rightF.y).toFloat(),
                 (tank.pos.x + rightB.x).toFloat(), (tank.pos.y + rightB.y).toFloat()
             )
+
         }
         background.endDraw()
 
@@ -95,6 +98,13 @@ class TankSim : PApplet() {
             rotate(tank.turretFacing.toFloat())
             image(turretImage, 0f, 0f)
 
+            //Harsh's mods
+            stroke(Color.green.rgb)
+            line(0.0f, 0.0f, 0f,-70f) //line to see what direction tank is facing
+
+            stroke(Color.red.rgb)
+            line(0.0f, 0.0f, 50*sin(tank.targetDirection.toFloat()),-50*cos(tank.targetDirection.toFloat())) //line to see what direction it is trying to go
+
             popMatrix()
         }
 
@@ -105,6 +115,8 @@ class TankSim : PApplet() {
             rotate((projectile.facing + Math.PI.toFloat() / 2.0).toFloat())
             image(shellImage, 0f, 0f)
             popMatrix()
+
+
         }
 
         // draw pickups
@@ -137,7 +149,8 @@ fun makeGame(ais: List<AI>): Game {
                 ),
                 facing = angle + Math.PI / 2,
                 ammoCount = 5,
-                faction = Faction.values()[i]
+                faction = Faction.values()[i],
+                targetDirection = 0.0
             )
         }.toMutableList(),
         pickups = (0 until MAX_PICKUPS).map {

@@ -71,7 +71,8 @@ public class BestTankEver implements AI {
                 isDodging ? dodge: isCollecting? turnToAmmo: turnToEnemy,
                 aimAtEnemy,
                 isShooting,
-                isCollecting ? collect : false
+                isCollecting ? collect : false,
+                null
         );
     }
 }

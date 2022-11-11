@@ -21,7 +21,8 @@ public class JavaTankAi implements AI {
                 1.0,
                 -1.0,
                 true,
-                false
+                false,
+                null
         );
     }
 }

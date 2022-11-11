@@ -100,7 +100,8 @@ class AdrianTankAi : AI {
             turn = turn,
             turnTurret = turnTurret,
             fire = targetIntercept != null && targetIntercept.distanceTo(tank.pos) < MAX_SHOT_TAKE_DISTANCE,
-            collect = closestPickup != null && closestPickup.pos.distanceTo(tank.pos) < TANK_PICKUP_RADIUS
+            collect = closestPickup != null && closestPickup.pos.distanceTo(tank.pos) < TANK_PICKUP_RADIUS,
+            target = targetIntercept
         )
     }
 

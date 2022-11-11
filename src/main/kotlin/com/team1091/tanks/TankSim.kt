@@ -23,6 +23,8 @@ class TankSim : PApplet() {
     lateinit var turretImage: PImage
     lateinit var shellImage: PImage
     lateinit var pickupImage: PImage
+    lateinit var crossHairsImage: PImage
+
     lateinit var background: PGraphics
 
     lateinit var game: Game
@@ -38,6 +40,7 @@ class TankSim : PApplet() {
         turretImage = loadImage("assets/turret.png")
         shellImage = loadImage("assets/shell.png")
         pickupImage = loadImage("assets/pickup.png")
+        crossHairsImage = loadImage("assets/crosshairs.png")
 
         background = createGraphics(width, height)
         background.beginDraw()
@@ -89,8 +92,20 @@ class TankSim : PApplet() {
         }
         background.endDraw()
 
-        // render tanks
+
         imageMode(CENTER)
+        rectMode(CENTER)
+
+        // draw target
+        game.tanks.forEach { tank ->
+            tank.targetPos?.let { pos ->
+                val x = pos.x.toFloat()
+                val y = pos.y.toFloat()
+                tint(tank.faction.color.rgb)
+                image(crossHairsImage, x, y)
+            }
+        }
+        // render tanks
         game.tanks.forEach { tank ->
             tint(tank.faction.color.rgb)
             pushMatrix()
@@ -108,15 +123,16 @@ class TankSim : PApplet() {
             stroke(Color.green.rgb)
             line(0.0f, 0.0f, 0f, -70f) //line to see what direction tank is facing
 
-            stroke(Color.red.rgb)
-            line(
-                0.0f,
-                0.0f,
-                50 * sin(tank.targetDirection.toFloat()),
-                -50 * cos(tank.targetDirection.toFloat())
-            ) //line to see what direction it is trying to go
-
+//            stroke(Color.red.rgb)
+//            line(
+//                0.0f,
+//                0.0f,
+//                50 * sin(tank.targetDirection.toFloat()),
+//                -50 * cos(tank.targetDirection.toFloat())
+//            ) //line to see what direction it is trying to go
             popMatrix()
+
+
         }
 
         // draw projectile
@@ -159,7 +175,7 @@ fun makeGame(ais: List<AI>): Game {
                 facing = angle + Math.PI / 2,
                 ammoCount = 5,
                 faction = Faction.values()[i],
-                targetDirection = 0.0
+                targetPos = null
             )
         }.toMutableList(),
         pickups = (0 until MAX_PICKUPS).map {

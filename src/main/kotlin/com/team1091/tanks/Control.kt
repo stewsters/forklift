@@ -5,5 +5,6 @@ data class Control(
     val turn: Double,
     val turnTurret: Double,
     val fire: Boolean,
-    val collect: Boolean
+    val collect: Boolean,
+    val target: Vec2? = null
 )

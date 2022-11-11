@@ -43,6 +43,8 @@ class Game(
                 e.printStackTrace()
                 Control(0.0, 0.0, 0.0, false, false)
             }
+            // Set target
+            tank.targetPos = control.target
 
             // apply control
             // turn

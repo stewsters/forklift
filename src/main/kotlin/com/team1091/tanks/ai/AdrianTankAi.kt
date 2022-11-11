@@ -5,6 +5,7 @@ import com.team1091.tanks.FRAMES_PER_SECOND
 import com.team1091.tanks.Line
 import com.team1091.tanks.PROJECTILE_MAX_FLIGHT_DIST
 import com.team1091.tanks.PROJECTILE_VELOCITY
+import com.team1091.tanks.SECONDS_PER_FRAME
 import com.team1091.tanks.Sensor
 import com.team1091.tanks.TANK_BARREL_LENGTH
 import com.team1091.tanks.TANK_MAX_AMMO
@@ -80,14 +81,14 @@ class AdrianTankAi : AI {
 
                 targetIntercept?.let {
                     turnTurret =
-                        driveTowards(it - tank.pos, tank.facing + tank.turretFacing) - (turn * 0.1 * TANK_TURN_RATE)
+                        driveTowards(it - tank.pos, tank.facing + tank.turretFacing) - (turn * SECONDS_PER_FRAME * TANK_TURN_RATE)
                 }
             } else {
                 targetIntercept = closestEnemy.pos
                 turnTurret = driveTowards(
                     closestEnemy.pos - tank.pos,
                     tank.facing + tank.turretFacing
-                ) - (turn * 0.1 * TANK_TURN_RATE)
+                ) - (turn * SECONDS_PER_FRAME * TANK_TURN_RATE)
             }
         }
 

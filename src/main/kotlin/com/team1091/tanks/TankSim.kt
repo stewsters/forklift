@@ -52,7 +52,7 @@ class TankSim : PApplet() {
     }
 
     override fun draw() {
-        game.takeTurn(1/SECONDS_PER_FRAME)
+        game.takeTurn(SIMULATION_SPEED)
 
         clear()
         imageMode(PConstants.CORNER)

@@ -4,7 +4,7 @@ import com.team1091.tanks.Control
 import com.team1091.tanks.Line
 import com.team1091.tanks.PROJECTILE_MAX_FLIGHT_DIST
 import com.team1091.tanks.PROJECTILE_VELOCITY
-import com.team1091.tanks.SECONDS_PER_FRAME
+import com.team1091.tanks.SIMULATION_SPEED
 import com.team1091.tanks.Sensor
 import com.team1091.tanks.TANK_BARREL_LENGTH
 import com.team1091.tanks.TANK_MAX_AMMO
@@ -70,7 +70,7 @@ class AdrianTankAi : AI {
         if (closestEnemy != null) {
             val rememberedPos = memory[closestEnemy]
             if (rememberedPos != null) {
-                val targetVel = (closestEnemy.pos - rememberedPos) * (1.0 / SECONDS_PER_FRAME)
+                val targetVel = (closestEnemy.pos - rememberedPos) * (1.0 / SIMULATION_SPEED)
 
                 targetIntercept = calculateAimPoint(
                     targetPos = closestEnemy.pos,

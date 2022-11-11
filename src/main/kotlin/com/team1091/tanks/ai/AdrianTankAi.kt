@@ -1,10 +1,10 @@
 package com.team1091.tanks.ai
 
 import com.team1091.tanks.Control
+import com.team1091.tanks.FRAMES_PER_SECOND
 import com.team1091.tanks.Line
 import com.team1091.tanks.PROJECTILE_MAX_FLIGHT_DIST
 import com.team1091.tanks.PROJECTILE_VELOCITY
-import com.team1091.tanks.SIMULATION_SPEED
 import com.team1091.tanks.Sensor
 import com.team1091.tanks.TANK_BARREL_LENGTH
 import com.team1091.tanks.TANK_MAX_AMMO
@@ -63,14 +63,13 @@ class AdrianTankAi : AI {
             turn = driveTowards(closestEnemy.pos - tank.pos, tank.facing)
         }
 
-
-        // if the enemy is in range and we have ammo light em up
+        // if both the enemy is in range and we have ammo then light em up
         // point turret at enemy
         var targetIntercept: Vec2? = null
         if (closestEnemy != null) {
             val rememberedPos = memory[closestEnemy]
             if (rememberedPos != null) {
-                val targetVel = (closestEnemy.pos - rememberedPos) * (1.0 / SIMULATION_SPEED)
+                val targetVel = (closestEnemy.pos - rememberedPos) * (FRAMES_PER_SECOND)
 
                 targetIntercept = calculateAimPoint(
                     targetPos = closestEnemy.pos,
@@ -137,11 +136,8 @@ class AdrianTankAi : AI {
         val driveLine = Line(tankPos, tankPos + facingDist(tankFacing))
         val shotLine = Line(projectilePos, projectilePos + facingDist(projectileFacing))
 
-        val intersection = intersection(driveLine, shotLine)
+        val intersection = intersection(driveLine, shotLine) ?: return 1.0
 
-        if (intersection == null) {
-            return 1.0
-        }
         // need to figure out if the intersection point is ahead or behind us
         return if ((intersection - tankPos).rotate(-tankFacing).x < 0) 1.0 else -1.0
     }

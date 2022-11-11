@@ -4,7 +4,7 @@ import com.team1091.tanks.Control
 import com.team1091.tanks.Sensor
 import com.team1091.tanks.entity.Tank
 
-class ExampleAi() : AI {
+class ExampleAi : AI {
     override fun act(sensor: Sensor, tank: Tank): Control {
         // sensor here has information on
         //  targets - a list of other tanks out there.

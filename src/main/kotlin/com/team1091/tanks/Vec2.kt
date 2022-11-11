@@ -1,14 +1,16 @@
 package com.team1091.tanks
 
 import kotlin.math.cos
+import kotlin.math.pow
 import kotlin.math.sin
+import kotlin.math.sqrt
 
 data class Vec2(
     val x: Double,
     val y: Double
 ) {
     fun distanceTo(other: Vec2): Double {
-        return Math.sqrt(Math.pow(x - other.x, 2.0) + Math.pow(y - other.y, 2.0))
+        return sqrt((x - other.x).pow(2.0) + (y - other.y).pow(2.0))
     }
 
     operator fun minus(other: Vec2): Vec2 {

@@ -16,7 +16,10 @@ const val PROJECTILE_MAX_FLIGHT_TIME = 10.0
 const val PROJECTILE_MAX_FLIGHT_DIST = PROJECTILE_VELOCITY * PROJECTILE_MAX_FLIGHT_TIME
 
 const val START_RADIUS = 300.0
-const val SIMULATION_SPEED = 0.15
+
+// We calculate positions 10 times per simulated second.
+const val FRAMES_PER_SECOND = 10.0
+const val SECONDS_PER_FRAME = 1.0 / FRAMES_PER_SECOND // 0.1
 
 const val MAX_PICKUPS = 100
 const val MIN_PICKUPS = 30

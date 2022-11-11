@@ -1,6 +1,10 @@
 package com.team1091.tanks
 
-import com.team1091.tanks.ai.*
+import com.team1091.tanks.ai.AI
+import com.team1091.tanks.ai.AdrianTankAi
+import com.team1091.tanks.ai.BraedenTankAi
+import com.team1091.tanks.ai.EthanTankAi
+import com.team1091.tanks.ai.Mary
 import com.team1091.tanks.entity.Faction
 import com.team1091.tanks.entity.Pickup
 import com.team1091.tanks.entity.Tank
@@ -9,6 +13,8 @@ import processing.core.PConstants
 import processing.core.PGraphics
 import processing.core.PImage
 import java.awt.Color
+import kotlin.math.cos
+import kotlin.math.sin
 import kotlin.random.Random
 
 class TankSim : PApplet() {
@@ -52,7 +58,7 @@ class TankSim : PApplet() {
     }
 
     override fun draw() {
-        game.takeTurn(SIMULATION_SPEED)
+        game.takeTurn(SECONDS_PER_FRAME)
 
         clear()
         imageMode(PConstants.CORNER)
@@ -100,10 +106,15 @@ class TankSim : PApplet() {
 
             //Harsh's mods
             stroke(Color.green.rgb)
-            line(0.0f, 0.0f, 0f,-70f) //line to see what direction tank is facing
+            line(0.0f, 0.0f, 0f, -70f) //line to see what direction tank is facing
 
             stroke(Color.red.rgb)
-            line(0.0f, 0.0f, 50*sin(tank.targetDirection.toFloat()),-50*cos(tank.targetDirection.toFloat())) //line to see what direction it is trying to go
+            line(
+                0.0f,
+                0.0f,
+                50 * sin(tank.targetDirection.toFloat()),
+                -50 * cos(tank.targetDirection.toFloat())
+            ) //line to see what direction it is trying to go
 
             popMatrix()
         }
@@ -115,8 +126,6 @@ class TankSim : PApplet() {
             rotate((projectile.facing + Math.PI.toFloat() / 2.0).toFloat())
             image(shellImage, 0f, 0f)
             popMatrix()
-
-
         }
 
         // draw pickups
@@ -144,8 +153,8 @@ fun makeGame(ais: List<AI>): Game {
                 ai = ai,
                 life = TANK_MAX_LIFE,
                 pos = Vec2(
-                    START_RADIUS * Math.cos(angle) + size.x / 2,
-                    START_RADIUS * Math.sin(angle) + size.y / 2
+                    START_RADIUS * cos(angle) + size.x / 2,
+                    START_RADIUS * sin(angle) + size.y / 2
                 ),
                 facing = angle + Math.PI / 2,
                 ammoCount = 5,

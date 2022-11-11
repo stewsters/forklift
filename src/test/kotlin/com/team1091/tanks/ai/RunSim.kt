@@ -1,7 +1,7 @@
 package com.team1091.tanks.ai
 
 import com.team1091.tanks.BestTankEver
-import com.team1091.tanks.SIMULATION_SPEED
+import com.team1091.tanks.SECONDS_PER_FRAME
 import com.team1091.tanks.makeGame
 import org.junit.jupiter.api.Test
 import java.text.DecimalFormat
@@ -30,7 +30,7 @@ class RunSim {
 
             // Let it go for 10 minutes, or until done
             while (game.isNotDone() && game.currentTime < 600) {
-                game.takeTurn(SIMULATION_SPEED)
+                game.takeTurn(SECONDS_PER_FRAME)
             }
 
             val survivors = game.tanks.filter { it.life > 0 }.map { it.ai.javaClass.name }

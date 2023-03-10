@@ -7,6 +7,7 @@ import com.team1091.tanks.entity.Tank
 import com.team1091.tanks.turnLeftOrRight
 
 class EthanTankAi() : AI {
+    var lastTankPos:Vec2? = null
     override fun act(sensor: Sensor, tank: Tank): Control {
 
         val closesttank = sensor.targets.minByOrNull { it.pos.distanceTo(tank.pos) }
@@ -37,7 +38,13 @@ class EthanTankAi() : AI {
 
         var turret = 0.0
         if (closesttank != null) {
-            turret = turnto(closesttank.pos - tank.pos, tank.facing + tank.turretFacing)
+            if(lastTankPos != null){
+                // calc projected pos
+            } else {
+                turret = turnto(closesttank.pos - tank.pos, tank.facing + tank.turretFacing)
+            }
+
+            lastTankPos = closesttank.pos
         }
         return Control(
             forward = speed,

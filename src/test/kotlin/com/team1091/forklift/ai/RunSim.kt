@@ -1,8 +1,8 @@
-package com.team1091.tanks.ai
+package com.team1091.forklift.ai
 
-import com.team1091.tanks.BestTankEver
-import com.team1091.tanks.SECONDS_PER_FRAME
-import com.team1091.tanks.makeGame
+import com.team1091.forklift.BestTankEver
+import com.team1091.forklift.SECONDS_PER_FRAME
+import com.team1091.forklift.makeGame
 import org.junit.jupiter.api.Test
 import java.text.DecimalFormat
 
@@ -15,7 +15,7 @@ class RunSim {
         val totalRuns = 1000
         val ais = listOf(
 //            DoNothingAi(),
-            AdrianTankAi(),
+            FokliftAi(),
             EthanTankAi(),
             BestTankEver(),
             BraedenTankAi(),
@@ -33,7 +33,7 @@ class RunSim {
                 game.takeTurn(SECONDS_PER_FRAME)
             }
 
-            val survivors = game.tanks.filter { it.life > 0 }.map { it.ai.javaClass.name }
+            val survivors = game.forklifts.filter { it.life > 0 }.map { it.ai.javaClass.name }
 
             println("Survivors round ${it}:")
             println(survivors)

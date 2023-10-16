@@ -1,7 +1,7 @@
-# Tanks
-A tank combat game.
+# Forklift
+A forklift sim game.
 
-In this game, you write an AI to control a robot tank and fight other tanks.
+In this game, you write an AI to control a robot forklift and deliver packages.
 
 
 ## Getting started

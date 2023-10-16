@@ -1,9 +1,6 @@
-package com.team1091.tanks
+package com.team1091.forklift
 
-import kotlin.math.abs
-import kotlin.math.cos
-import kotlin.math.sin
-import kotlin.math.sqrt
+import kotlin.math.*
 
 /**
  * Given a current angle, find out how to turn to target angle.
@@ -33,11 +30,11 @@ fun turnLeftOrRight(current: Double, target: Double): Double {
  * Allows you to calculate an intercept course
  */
 fun calculateAimPoint(
-    targetPos: Vec2,
-    targetVel: Vec2,
-    shooterPos: Vec2,
+    targetPos: Vec2d,
+    targetVel: Vec2d,
+    shooterPos: Vec2d,
     projectileSpeed: Double
-): Vec2? {
+): Vec2d? {
     val dP = targetPos - shooterPos
     val a = targetVel * targetVel - (projectileSpeed * projectileSpeed)
     val b = 2.0 * (dP * targetVel)
@@ -70,12 +67,12 @@ fun calculateAimPoint(
 /**
  * Finds a vector on a unit circle of size length.
  */
-fun facingDist(facing: Double, length: Double = 1.0) = Vec2(length * cos(facing), length * sin(facing))
+fun facingDist(facing: Double, length: Double = 1.0) = Vec2d(length * cos(facing), length * sin(facing))
 
 /**
  * Distance from a line segment to a point
  */
-fun distanceToLine(pos: Vec2, lineStart: Vec2, lineEnd: Vec2) = distanceToLine(
+fun distanceToLine(pos: Vec2d, lineStart: Vec2d, lineEnd: Vec2d) = distanceToLine(
     pos.x, pos.y,
     lineStart.x, lineStart.y,
     lineEnd.x, lineEnd.y
@@ -108,9 +105,9 @@ fun distanceToLine(x: Double, y: Double, x1: Double, y1: Double, x2: Double, y2:
     return sqrt((dx * dx + dy * dy))
 }
 
-data class Line(val start: Vec2, val end: Vec2)
+data class Line(val start: Vec2d, val end: Vec2d)
 
-fun intersection(a: Line, b: Line): Vec2? {
+fun intersection(a: Line, b: Line): Vec2d? {
     val x1 = a.start.x
     val y1 = a.start.y
     val x2 = a.end.x
@@ -125,5 +122,9 @@ fun intersection(a: Line, b: Line): Vec2? {
     }
     val xi = ((x3 - x4) * (x1 * y2 - y1 * x2) - (x1 - x2) * (x3 * y4 - y3 * x4)) / d
     val yi = ((y3 - y4) * (x1 * y2 - y1 * x2) - (y1 - y2) * (x3 * y4 - y3 * x4)) / d
-    return Vec2(xi, yi)
+    return Vec2d(xi, yi)
+}
+
+fun Double.limit(): Double {
+    return max(-1.0, min(1.0, this))
 }

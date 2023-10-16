@@ -10,11 +10,13 @@ version = "1.0-SNAPSHOT"
 
 repositories {
     mavenCentral()
+    maven(url = "https://jitpack.io")
 }
 
 dependencies {
     testImplementation(kotlin("test"))
     implementation("org.processing:core:3.3.7")
+    implementation ("com.github.stewsters:kaiju:1.5")
 }
 
 application {
@@ -26,7 +28,7 @@ tasks.test {
 }
 
 tasks.withType<KotlinCompile> {
-    kotlinOptions.jvmTarget = "1.8"
+    kotlinOptions.jvmTarget = "11"
 }
 
 application {

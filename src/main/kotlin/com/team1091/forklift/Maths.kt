@@ -1,6 +1,11 @@
 package com.team1091.forklift
 
-import kotlin.math.*
+import kotlin.math.abs
+import kotlin.math.cos
+import kotlin.math.max
+import kotlin.math.min
+import kotlin.math.sin
+import kotlin.math.sqrt
 
 /**
  * Given a current angle, find out how to turn to target angle.

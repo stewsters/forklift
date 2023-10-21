@@ -17,7 +17,7 @@ class ForkliftAi : AI {
 
 //    private val memory = mutableMapOf<Forklift, Vec2d>()
 
-    private var targetPickup : Pallet?=null
+    private var targetPickup: Pallet? = null
     private var path: List<Vec2>? = null
 
     override fun act(sensor: Sensor, forklift: Forklift): Control {
@@ -45,8 +45,8 @@ class ForkliftAi : AI {
 
             if (packageToGrab != null) {
                 val possiblePath = sensor.findPath(forklift.pos.toIntRep(), packageToGrab.pos.toIntRep())
-                if(possiblePath!=null){
-                    path=possiblePath
+                if (possiblePath != null) {
+                    path = possiblePath
                     targetPickup = packageToGrab
                 }
             }

@@ -154,14 +154,14 @@ fun makeGame(ais: List<AI>): Game {
         brush2d = { m, x, y -> m[x, y] = TileType.LOADING_ZONE }
     )
 
-  var packageId = 0
+    var packageId = 0
     // TODO: half of loading zones have packages, half need packages
-    val pallets = zones.flatMap { zone->
+    val pallets = zones.flatMap { zone ->
         zone.area.allPoints()
     }.map {
         Pallet(
             packageId++,
-            Vec2d(x = it.x.toDouble()+ 0.5, y = it.y.toDouble()+ 0.5)
+            Vec2d(x = it.x.toDouble() + 0.5, y = it.y.toDouble() + 0.5)
         )
     }.toMutableList()
 
@@ -187,10 +187,10 @@ fun makeGame(ais: List<AI>): Game {
 }
 
 private fun Rectangle.allPoints(): List<Vec2> {
-return   cartesianProduct(
-    (lower.x .. upper.x).toList(),
-    (lower.y .. upper.y).toList()
-).map { Vec2(it.first,it.second) }
+    return cartesianProduct(
+        (lower.x..upper.x).toList(),
+        (lower.y..upper.y).toList()
+    ).map { Vec2(it.first, it.second) }
 }
 
 

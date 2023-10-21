@@ -21,15 +21,9 @@ class Game(
 
     fun takeTurn(dt: Double) {
         currentTime += dt
-        // tanks ai processes
+        // forklift ai processes
         val liftsToRemove = mutableListOf<Forklift>()
         forklifts.forEach { forklift ->
-
-//            if (tank.life <= 0) {
-//                // You are dead, don't move
-//                tanksToRemove.add(tank)
-//                return@forEach
-//            }
 
             val control = try {
                 forklift.ai.act(
@@ -61,7 +55,7 @@ class Game(
                 forklift.pos.y + sin(forklift.facing) * control.forward.limit() * speedModifier * dt
             )
 
-            // Dont let tanks leave
+            // Dont let forklifts leave the map or clip through walls
             if (bounds.inside(newPos) && terrain[newPos].canMove) {
                 forklift.pos = newPos
             }

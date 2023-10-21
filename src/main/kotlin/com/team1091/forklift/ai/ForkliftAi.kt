@@ -5,7 +5,7 @@ import com.team1091.forklift.entity.Forklift
 import kotlin.math.abs
 
 
-class FokliftAi : AI {
+class ForkliftAi : AI {
 
     private val memory = mutableMapOf<Forklift, Vec2d>()
 

@@ -15,7 +15,7 @@ class RunSim {
         val totalRuns = 1000
         val ais = listOf(
 //            DoNothingAi(),
-            FokliftAi(),
+            ForkliftAi(),
             EthanTankAi(),
             BestTankEver(),
             BraedenTankAi(),

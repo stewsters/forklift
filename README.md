@@ -15,20 +15,17 @@ You will need to install a few things to get this working.
 ### Getting running
 Make a local copy of the project
 ```bash
-git clone https://github.com/Team1091/tanks.git
+git clone https://github.com/stewsters/forklift.git
 ```
 
 Then open it in intellij.  It will download the dependencies which will take a minute or two.
 To run it open the gradle window on the right side, and hit tasks>application>run
 
-If it works, you should see some tanks battling.
+If it works, you should see some forklifts driving.
 
 ### Create an AI
-Make a copy of an existing AI in the same folder, changing the name.
-For a Java based AI, use src/main/java/com/team1091/tanks/JavaTankAi.java
-For a Kotlin based AI, use src/main/kotlin/com/team1091/tanks/ai/ExampleAi.java
 
-Add that AI to the ai list in TankSim.kt.  Try running it again and see if that tanke appears.
+Add that AI to the ai list in ForkliftSim.kt.  Try running it again and see if that forklift appears.
 
 ### The AI
 You will get some input each frame and have to return a Control object with what you want to do this frame.
@@ -36,7 +33,7 @@ You will get some input each frame and have to return a Control object with what
 ```kotlin
     override fun act(sensor: Sensor, tank: Tank): Control {
         // sensor here has information on
-        //  targets - a list of other tanks out there.
+        //  targets - a list of other forklifts out there.
         //  projectiles - a list of flying shots.  Avoid getting hit!
         //  pickups - a list of pickups.  Collect these up to regain ammo
     

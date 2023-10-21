@@ -1,7 +1,7 @@
 package com.team1091.forklift
 
 import com.team1091.forklift.ai.AI
-import com.team1091.forklift.ai.FokliftAi
+import com.team1091.forklift.ai.ForkliftAi
 import com.team1091.forklift.entity.Forklift
 import com.team1091.forklift.entity.LoadingZone
 import com.team1091.forklift.entity.Package
@@ -52,7 +52,7 @@ class ForkliftSim : PApplet() {
 
         // Add your ais here
         val ais = listOf(
-            FokliftAi()
+            ForkliftAi()
         )
         game = makeGame(ais)
 
@@ -84,22 +84,22 @@ class ForkliftSim : PApplet() {
         background.stroke(Color.DARK_GRAY.rgb)
 
         // draw tracks
-        game.forklifts.forEach { tank ->
-            val leftF = Vec2d(4.0, -6.0).rotate(tank.facing)
-            val leftB = Vec2d(-4.0, -6.0).rotate(tank.facing)
-            val rightF = Vec2d(4.0, 6.0).rotate(tank.facing)
-            val rightB = Vec2d(-4.0, 6.0).rotate(tank.facing)
+        game.forklifts.forEach { forklift ->
+            val leftF = Vec2d(4.0, -6.0).rotate(forklift.facing)
+            val leftB = Vec2d(-4.0, -6.0).rotate(forklift.facing)
+            val rightF = Vec2d(4.0, 6.0).rotate(forklift.facing)
+            val rightB = Vec2d(-4.0, 6.0).rotate(forklift.facing)
 
             background.stroke(Color.DARK_GRAY.rgb)
 
             background.line(
-                (tank.pos.x + leftF.x).toFloat(), (tank.pos.y + leftF.y).toFloat(),
-                (tank.pos.x + leftB.x).toFloat(), (tank.pos.y + leftB.y).toFloat()
+                (forklift.pos.x + leftF.x).toFloat(), (forklift.pos.y + leftF.y).toFloat(),
+                (forklift.pos.x + leftB.x).toFloat(), (forklift.pos.y + leftB.y).toFloat()
             )
 
             background.line(
-                (tank.pos.x + rightF.x).toFloat(), (tank.pos.y + rightF.y).toFloat(),
-                (tank.pos.x + rightB.x).toFloat(), (tank.pos.y + rightB.y).toFloat()
+                (forklift.pos.x + rightF.x).toFloat(), (forklift.pos.y + rightF.y).toFloat(),
+                (forklift.pos.x + rightB.x).toFloat(), (forklift.pos.y + rightB.y).toFloat()
             )
 
         }
@@ -118,16 +118,16 @@ class ForkliftSim : PApplet() {
 //                image(crossHairsImage, x, y)
 //            }
 //        }
-        // render tanks
-        game.forklifts.forEach { tank ->
+        // render forklifts
+        game.forklifts.forEach { forklift ->
 //            tint(tank.faction.color.rgb)
             pushMatrix()
-            translate(tank.pos.x.toFloat() * scale, tank.pos.y.toFloat() * scale)
+            translate(forklift.pos.x.toFloat() * scale, forklift.pos.y.toFloat() * scale)
 
-            text(tank.displayName, -30f, -10f)
+            text(forklift.displayName, -30f, -10f)
 //            text("${tank.life} / ${tank.ammoCount}", -15f, 20f)
-            rotate((tank.facing + Math.PI.toFloat() / 2.0).toFloat())
-            tint(tank.tint)
+            rotate((forklift.facing + Math.PI.toFloat() / 2.0).toFloat())
+            tint(forklift.tint)
             image(forkliftImage, 0f, 0f)
             tint(Color.WHITE.rgb)
 

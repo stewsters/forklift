@@ -20,7 +20,7 @@ dependencies {
 }
 
 application {
-    mainClassName = "com.team1091.tanks.MainKt"
+    mainClassName = "com.team1091.forklift.MainKt"
 }
 
 tasks.test {

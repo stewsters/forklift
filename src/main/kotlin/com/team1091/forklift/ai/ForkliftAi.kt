@@ -7,11 +7,15 @@ import kotlin.math.abs
 
 class ForkliftAi : AI {
 
-    private val memory = mutableMapOf<Forklift, Vec2d>()
+//    private val memory = mutableMapOf<Forklift, Vec2d>()
 
     override fun act(sensor: Sensor, forklift: Forklift): Control {
 
         // if we have no package, go get one.
+
+        // find one we need to move, that will either be one in
+
+
         //  find the closest one in the array
         //  path to it
 

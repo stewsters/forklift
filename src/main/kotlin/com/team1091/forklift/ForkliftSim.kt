@@ -21,7 +21,7 @@ import java.awt.Color
 import kotlin.random.Random
 
 val rectangle = Rectangle(Vec2(0, 0), Vec2(13, 13))
-val scale = 32f
+val scale = 64f
 
 class ForkliftSim : PApplet() {
 
@@ -31,24 +31,23 @@ class ForkliftSim : PApplet() {
     lateinit var floorImage: PImage
     lateinit var shelfImage: PImage
     lateinit var wallImage: PImage
+    lateinit var loadingZoneImage: PImage
 
     lateinit var background: PGraphics
     lateinit var game: Game
-
-//    private val size = Vec2d(, )
 
     override fun settings() {
         size((scale * (rectangle.upper.x)).toInt(), (scale * (rectangle.upper.y)).toInt())
     }
 
     override fun setup() {
-        forkliftImage = loadImage("assets/tank.png")
-        packageImage = loadImage("assets/pickup.png")
+        forkliftImage = loadImage("assets/forklift.png")
+        packageImage = loadImage("assets/package.png")
 
         floorImage = loadImage("assets/floor.png")
         shelfImage = loadImage("assets/shelf.png")
         wallImage = loadImage("assets/wall.png")
-
+        loadingZoneImage = loadImage("assets/loadingZone.png")
 
         // Add your ais here
         val ais = listOf(
@@ -62,6 +61,7 @@ class ForkliftSim : PApplet() {
         game.terrain.forEachIndexed { x, y, t ->
             val type = when (t) {
                 TileType.FLOOR -> floorImage
+                TileType.LOADING_ZONE -> loadingZoneImage
                 TileType.SHELF -> shelfImage
                 TileType.WALL -> wallImage
             }
@@ -80,77 +80,31 @@ class ForkliftSim : PApplet() {
         imageMode(PConstants.CORNER)
         image(background, 0f, 0f)
 
-        background.beginDraw()
-        background.stroke(Color.DARK_GRAY.rgb)
-
-        // draw tracks
-        game.forklifts.forEach { forklift ->
-            val leftF = Vec2d(4.0, -6.0).rotate(forklift.facing)
-            val leftB = Vec2d(-4.0, -6.0).rotate(forklift.facing)
-            val rightF = Vec2d(4.0, 6.0).rotate(forklift.facing)
-            val rightB = Vec2d(-4.0, 6.0).rotate(forklift.facing)
-
-            background.stroke(Color.DARK_GRAY.rgb)
-
-            background.line(
-                (forklift.pos.x + leftF.x).toFloat(), (forklift.pos.y + leftF.y).toFloat(),
-                (forklift.pos.x + leftB.x).toFloat(), (forklift.pos.y + leftB.y).toFloat()
-            )
-
-            background.line(
-                (forklift.pos.x + rightF.x).toFloat(), (forklift.pos.y + rightF.y).toFloat(),
-                (forklift.pos.x + rightB.x).toFloat(), (forklift.pos.y + rightB.y).toFloat()
-            )
-
-        }
-        background.endDraw()
-
-
         imageMode(CENTER)
         rectMode(CENTER)
 
-        // draw target
-//        game.forklifts.forEach { tank ->
-//            tank.targetPos?.let { pos ->
-//                val x = pos.x.toFloat()
-//                val y = pos.y.toFloat()
-//                tint(tank.faction.color.rgb)
-//                image(crossHairsImage, x, y)
-//            }
-//        }
         // render forklifts
         game.forklifts.forEach { forklift ->
-//            tint(tank.faction.color.rgb)
+
             pushMatrix()
             translate(forklift.pos.x.toFloat() * scale, forklift.pos.y.toFloat() * scale)
 
             text(forklift.displayName, -30f, -10f)
-//            text("${tank.life} / ${tank.ammoCount}", -15f, 20f)
             rotate((forklift.facing + Math.PI.toFloat() / 2.0).toFloat())
             tint(forklift.tint)
             image(forkliftImage, 0f, 0f)
             tint(Color.WHITE.rgb)
 
             stroke(Color.green.rgb)
-            //line(0.0f, 0.0f, 0f, -70f) //line to see what direction tank is facing
 
             popMatrix()
         }
-
-        // draw projectile
-//        game.projectiles.forEach { projectile ->
-//            pushMatrix()
-//            translate(projectile.pos.x.toFloat(), projectile.pos.y.toFloat())
-//            rotate((projectile.facing + Math.PI.toFloat() / 2.0).toFloat())
-//            image(shellImage, 0f, 0f)
-//            popMatrix()
-//        }
 
         // draw pickups
         game.packages.forEach { pickup ->
             pushMatrix()
             translate(pickup.pos.x.toFloat() * scale, pickup.pos.y.toFloat() * scale)
-            image(packageImage, 0f, 0f)
+            image(packageImage, 0f, 0f, scale / 2, scale / 2)
             popMatrix()
         }
 
@@ -160,6 +114,23 @@ class ForkliftSim : PApplet() {
 
 
 fun makeGame(ais: List<AI>): Game {
+
+    val centerX = rectangle.center().x
+    val centerY = rectangle.center().y
+
+    val zones = listOf(
+        Rectangle(lower = Vec2(centerX - 1, 0), upper = Vec2(centerX + 1, 0)), // top
+        Rectangle(
+            lower = Vec2(centerX - 1, rectangle.upper.y - 1),
+            upper = Vec2(centerX + 1, rectangle.upper.y - 1)
+        ), // bottom
+        Rectangle(lower = Vec2(0, centerY - 1), upper = Vec2(0, centerY + 1)), // left
+        Rectangle(
+            lower = Vec2(rectangle.upper.x - 1, centerX - 1),
+            upper = Vec2(rectangle.upper.x - 1, centerX + 1)
+        ), // right
+    ).mapIndexed { i, t -> LoadingZone(i, t) }
+
 
     val terrain = matrix2dOf(rectangle.upper.x, rectangle.upper.y) { x, y -> TileType.FLOOR }
     fillWithBorder(terrain, TileType.FLOOR, TileType.WALL)
@@ -173,20 +144,26 @@ fun makeGame(ais: List<AI>): Game {
         brush2d = { m, x, y -> m[x, y] = TileType.SHELF }
     )
 
+    fill(
+        terrain,
+        predicate = and(
+            { m, x, y ->
+                zones.any { it.area.contains(x, y) }
+            }
+        ),
+        brush2d = { m, x, y -> m[x, y] = TileType.LOADING_ZONE }
+    )
 
-    // TODO: add loading zones
-
-    val centerX = terrain.getSize().x / 2
-    val centerY = terrain.getSize().y / 2
-
-
-    val zones = listOf(
-        Rectangle(lower = Vec2(centerX - 3, 0), upper = Vec2(centerX + 3, 2)) // top
-    ).mapIndexed { i, t -> LoadingZone(i, t) }
-
-
+  var packageId = 0
     // TODO: half of loading zones have packages, half need packages
-
+    val packages = zones.flatMap {  zone->
+        zone.area.allPoints()
+    }.map {
+        Package(
+            packageId++,
+            Vec2d(x = it.x.toDouble()+ 0.5, y = it.y.toDouble()+ 0.5)
+        )
+    }.toMutableList()
 
     val game = Game(
         bounds = rectangle,
@@ -202,17 +179,21 @@ fun makeGame(ais: List<AI>): Game {
                 carrying = null
             )
         }.toMutableList(),
-        packages = (0 until MAX_PICKUPS).map {
-            Package(
-                it,
-                Vec2d(
-                    x = Random.nextDouble(rectangle.upper.x.toDouble()),
-                    y = Random.nextDouble(rectangle.upper.y.toDouble())
-                )
-            )
-        }.toMutableList(),
+        packages = packages,
         loadingZones = zones
     )
 
     return game
+}
+
+private fun Rectangle.allPoints(): List<Vec2> {
+return   cartesianProduct(
+    (lower.x .. upper.x).toList(),
+    (lower.y .. upper.y).toList()
+).map { Vec2(it.first,it.second) }
+}
+
+
+fun <T, U> cartesianProduct(c1: Collection<T>, c2: Collection<U>): List<Pair<T, U>> {
+    return c1.flatMap { lhsElem -> c2.map { rhsElem -> lhsElem to rhsElem } }
 }

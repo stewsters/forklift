@@ -5,6 +5,7 @@ enum class TileType(
     val canHold: Boolean
 ) {
     FLOOR(true, true),
+    LOADING_ZONE(true, true),
     SHELF(false, true),
     WALL(false, false)
 }

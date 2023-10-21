@@ -1,5 +1,6 @@
 package com.team1091.forklift
 
+import kaiju.math.Vec2
 import kotlin.math.cos
 import kotlin.math.pow
 import kotlin.math.sin
@@ -42,5 +43,9 @@ data class Vec2d(
     // Dot product
     operator fun times(other: Vec2d): Double {
         return x * other.x + y * other.y
+    }
+
+    fun toIntRep(): Vec2 {
+        return Vec2(x.toInt(), y.toInt())
     }
 }

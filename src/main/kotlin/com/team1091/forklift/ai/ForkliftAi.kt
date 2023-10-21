@@ -1,7 +1,15 @@
 package com.team1091.forklift.ai
 
-import com.team1091.forklift.*
+import com.team1091.forklift.Control
+import com.team1091.forklift.Line
+import com.team1091.forklift.Sensor
+import com.team1091.forklift.Vec2d
 import com.team1091.forklift.entity.Forklift
+import com.team1091.forklift.entity.Pallet
+import com.team1091.forklift.facingDist
+import com.team1091.forklift.intersection
+import com.team1091.forklift.turnLeftOrRight
+import kaiju.math.Vec2
 import kotlin.math.abs
 
 
@@ -9,9 +17,41 @@ class ForkliftAi : AI {
 
 //    private val memory = mutableMapOf<Forklift, Vec2d>()
 
+    private var targetPickup : Pallet?=null
+    private var path: List<Vec2>? = null
+
     override fun act(sensor: Sensor, forklift: Forklift): Control {
 
-        // if we have no package, go get one.
+        // if we are carrying a package
+        //if()
+
+
+        // if we know where it goes, drive there and drop
+
+        // if we dont know where it goes, store it somewhere
+
+
+        // if we have no package, lets be useful.
+        // go get one and store it
+        if (forklift.carrying == null) {
+            // find all packages that are
+            // in a loading zone
+            // should not be
+
+            sensor.misplacedPackages()
+
+            val misplacedPackages = sensor.misplacedPackages()
+            val packageToGrab = misplacedPackages.minByOrNull { it.pos.distanceTo(forklift.pos) }
+
+            if (packageToGrab != null) {
+                val possiblePath = sensor.findPath(forklift.pos.toIntRep(), packageToGrab.pos.toIntRep())
+                if(possiblePath!=null){
+                    path=possiblePath
+                    targetPickup = packageToGrab
+                }
+            }
+        }
+
 
         // find one we need to move, that will either be one in
 
@@ -149,12 +189,5 @@ class ForkliftAi : AI {
         // need to figure out if the intersection point is ahead or behind us
         return if ((intersection - tankPos).rotate(-tankFacing).x < 0) 1.0 else -1.0
     }
-
-    companion object {
-        const val MAX_PROJECTILE_DIST = 80
-        const val MAX_PROJECTILE_DODGE_DIST = 30.0
-        const val MAX_SHOT_TAKE_DISTANCE = PROJECTILE_MAX_FLIGHT_DIST * 3 / 4
-    }
-
 
 }

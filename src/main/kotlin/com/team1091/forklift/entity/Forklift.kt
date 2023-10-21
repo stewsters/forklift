@@ -8,7 +8,7 @@ class Forklift(
     val ai: AI,
     var pos: Vec2d,
     var facing: Double,
-    var carrying: Package?,
+    var carrying: Pallet?,
     val tint: Int = Color.WHITE.rgb
 ) {
 

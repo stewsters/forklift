@@ -2,7 +2,7 @@ package com.team1091.forklift
 
 import com.team1091.forklift.entity.Forklift
 import com.team1091.forklift.entity.LoadingZone
-import com.team1091.forklift.entity.Package
+import com.team1091.forklift.entity.Pallet
 import com.team1091.forklift.map.TileType
 import kaiju.math.Matrix2d
 import kaiju.math.geom.Rectangle
@@ -13,7 +13,7 @@ class Game(
     val bounds: Rectangle,
     val terrain: Matrix2d<TileType>,
     val forklifts: MutableList<Forklift>,
-    val packages: MutableList<Package> = mutableListOf(),
+    val pallets: MutableList<Pallet> = mutableListOf(),
     val loadingZones: List<LoadingZone> = mutableListOf()
 ) {
 
@@ -28,8 +28,11 @@ class Game(
             val control = try {
                 forklift.ai.act(
                     Sensor(
+                        map = terrain,
                         forklifts = forklifts.filter { it != forklift },
-                        packages = packages.toList()
+                        pallets = pallets.toList(),
+                        loadingZones = loadingZones,
+                        orders = mutableMapOf()
                     ),
                     forklift
                 )
@@ -42,13 +45,13 @@ class Game(
 
             // apply control
             // turn
-            forklift.facing += control.turn.limit() * TANK_TURN_RATE * dt
+            forklift.facing += control.turn.limit() * FORKLIFT_TURN_RATE * dt
 
             // turn turret speed
             //forklift.turretFacing += control.turnTurret.limit() * TURRET_TURN_RATE * dt
 
             // drive
-            val speedModifier = (if (control.pickUp) TANK_VACUUM_SLOW * TANK_SPEED else TANK_SPEED)
+            val speedModifier = (if (control.pickUp) FORKLIFT_VACUUM_SLOW * FORKLIFT_SPEED else FORKLIFT_SPEED)
 
             val newPos = Vec2d(
                 forklift.pos.x + cos(forklift.facing) * control.forward.limit() * speedModifier * dt,
@@ -86,11 +89,11 @@ class Game(
 //                val capacity = TANK_MAX_AMMO - forklift.ammoCount
 
                 val pickupPos = forklift.pos + FORWARD.rotate(forklift.facing)
-                val pickedUp = packages.firstOrNull { it.pos.distanceTo(pickupPos) < PACKAGE_PICKUP_RADIUS }
+                val pickedUp = pallets.firstOrNull { it.pos.distanceTo(pickupPos) < PACKAGE_PICKUP_RADIUS }
 
                 if (pickedUp != null) {
                     forklift.carrying = pickedUp
-                    packages.remove(pickedUp)
+                    pallets.remove(pickedUp)
                 }
 
             }
@@ -100,7 +103,7 @@ class Game(
                 val pack = forklift.carrying!!
                 if (terrain[pickupPos].canHold) {
                     pack.pos = pickupPos
-                    packages.add(pack)
+                    pallets.add(pack)
                     forklift.carrying = null
                 }
             }

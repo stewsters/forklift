@@ -4,7 +4,7 @@ import com.team1091.forklift.ai.AI
 import com.team1091.forklift.ai.ForkliftAi
 import com.team1091.forklift.entity.Forklift
 import com.team1091.forklift.entity.LoadingZone
-import com.team1091.forklift.entity.Package
+import com.team1091.forklift.entity.Pallet
 import com.team1091.forklift.map.TileType
 import kaiju.mapgen.two.fill
 import kaiju.mapgen.two.fillWithBorder
@@ -101,7 +101,7 @@ class ForkliftSim : PApplet() {
         }
 
         // draw pickups
-        game.packages.forEach { pickup ->
+        game.pallets.forEach { pickup ->
             pushMatrix()
             translate(pickup.pos.x.toFloat() * scale, pickup.pos.y.toFloat() * scale)
             image(packageImage, 0f, 0f, scale / 2, scale / 2)
@@ -156,10 +156,10 @@ fun makeGame(ais: List<AI>): Game {
 
   var packageId = 0
     // TODO: half of loading zones have packages, half need packages
-    val packages = zones.flatMap {  zone->
+    val pallets = zones.flatMap { zone->
         zone.area.allPoints()
     }.map {
-        Package(
+        Pallet(
             packageId++,
             Vec2d(x = it.x.toDouble()+ 0.5, y = it.y.toDouble()+ 0.5)
         )
@@ -179,7 +179,7 @@ fun makeGame(ais: List<AI>): Game {
                 carrying = null
             )
         }.toMutableList(),
-        packages = packages,
+        pallets = pallets,
         loadingZones = zones
     )
 

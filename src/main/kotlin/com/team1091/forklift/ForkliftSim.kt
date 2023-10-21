@@ -20,7 +20,7 @@ import processing.core.PImage
 import java.awt.Color
 import kotlin.random.Random
 
-val rectangle = Rectangle(Vec2(0, 0), Vec2(13, 13))
+val rectangle = Rectangle(Vec2(0, 0), Vec2(15, 15))
 val scale = 64f
 
 class ForkliftSim : PApplet() {
@@ -138,7 +138,7 @@ fun makeGame(ais: List<AI>): Game {
         terrain,
         predicate = and(
             notNearCell(TileType.WALL),
-            { m, x, y -> x % 6 != 0 },
+            { m, x, y -> x % 7 != 0 },
             { m, x, y -> y % 2 == 0 }
         ),
         brush2d = { m, x, y -> m[x, y] = TileType.SHELF }

@@ -7,7 +7,7 @@ import kotlin.math.sin
 import kotlin.math.sqrt
 
 
-val FORWARD = Vec2d(0.0, 1.0)
+val FORWARD = Vec2d(1.0, 0.0)
 
 data class Vec2d(
     val x: Double,

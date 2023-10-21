@@ -1,6 +1,7 @@
 package com.team1091.forklift
 
 import kaiju.math.Vec2
+import kaiju.math.geom.Rectangle
 import kotlin.math.abs
 import kotlin.math.cos
 import kotlin.math.max
@@ -137,4 +138,8 @@ fun Double.limit(): Double {
 
 fun Vec2.toCenter(): Vec2d {
     return Vec2d(this.x + 0.5, this.y + 0.5)
+}
+
+fun Rectangle.contains(p: Vec2d): Boolean {
+    return contains(p.x.toInt(),p.y.toInt())
 }

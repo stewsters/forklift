@@ -18,22 +18,24 @@ class Game(
 ) {
 
     var currentTime = 0.0
+    var orders = mutableMapOf<Pallet, Int>()
 
     fun takeTurn(dt: Double) {
         currentTime += dt
         // forklift ai processes
         val liftsToRemove = mutableListOf<Forklift>()
-        forklifts.forEach { forklift ->
 
+        val sensor = Sensor(
+            terrain = terrain,
+            forklifts = forklifts,
+            pallets = pallets.toList(),
+            loadingZones = loadingZones,
+            orders = orders
+        )
+        forklifts.forEach { forklift ->
             val control = try {
                 forklift.ai.act(
-                    Sensor(
-                        terrain = terrain,
-                        forklifts = forklifts.filter { it != forklift },
-                        pallets = pallets.toList(),
-                        loadingZones = loadingZones,
-                        orders = mutableMapOf()
-                    ),
+                    sensor,
                     forklift
                 )
             } catch (e: Exception) {
@@ -58,7 +60,7 @@ class Game(
                 forklift.pos.y + sin(forklift.facing) * control.forward.limit() * speedModifier * dt
             )
 
-            // Dont let forklifts leave the map or clip through walls
+            // Don't let forklifts leave the map or clip through walls
             if (bounds.inside(newPos) && terrain[newPos].canMove) {
                 forklift.pos = newPos
             }
@@ -76,7 +78,7 @@ class Game(
             }
 
             if (control.place && forklift.carrying != null) {
-                val endOfFork =  forklift.calculateEndEffector()
+                val endOfFork = forklift.calculateEndEffector()
                 val pack = forklift.carrying!!
                 if (terrain.contains(endOfFork.toIntRep()) && terrain[endOfFork].canHold) {
                     pack.pos = endOfFork
@@ -88,6 +90,58 @@ class Game(
         forklifts.removeAll(liftsToRemove)
 
         // TODO: score
+
+        // if an order is resolved, resolve it, and give some more package
+        if (orders.isEmpty()) {
+            val load = pallets.shuffled().subList(0, 2)
+
+            load.forEach {
+                orders[it] = loadingZones.random().id
+            }
+
+        }
+
+
+        // send orders if they are complete
+        loadingZones.forEach { zone ->
+
+            val requiredPallets = orders.filter { it.value == zone.id }.map { it.key }
+            if(requiredPallets.isEmpty())
+                return@forEach
+
+            val palletsHere = pallets.filter { zone.area.contains(it.pos) }
+
+            if (palletsHere.size == requiredPallets.size && palletsHere.containsAll(requiredPallets)) {
+
+                pallets.removeAll(palletsHere)
+
+                println("Got em")
+            }
+
+
+            // all pallets in the zone should be be there
+//            val allPalletsAreHere =
+
+
+            // close orders for these pallets,
+
+            // drop off new pallets, open new orders
+
+        }
+
+        // if any loading zones are empty, add more packages
+//        loadingZones.forEach {loadingZone->
+//
+//            if (pallets.none { loadingZone.area.contains(it.pos) })
+//
+//
+//
+//        }
+
+//        orders.forEach {order->
+//
+//        }
+
 
     }
 

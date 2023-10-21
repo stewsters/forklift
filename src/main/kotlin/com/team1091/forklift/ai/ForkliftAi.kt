@@ -1,7 +1,6 @@
 package com.team1091.forklift.ai
 
 import com.team1091.forklift.Control
-import com.team1091.forklift.FORKLIFT_PICKUP_DISTANCE
 import com.team1091.forklift.Line
 import com.team1091.forklift.PACKAGE_PICKUP_RADIUS
 import com.team1091.forklift.Sensor
@@ -53,23 +52,31 @@ class ForkliftAi : AI {
                     }
                 }
             }
+            if (targetPickup != null) {
+                (path?.firstOrNull() ?: targetPickup?.pos)?.apply {
 
-            (path?.firstOrNull() ?: targetPickup?.pos)?.apply {
+                    // shorten path
+                    if (path!!.isNotEmpty() && forklift.pos.distanceTo(this) < 0.25) {
+                        // we are close enough, go to the next one
+                        path = path!!.subList(1, path!!.size)
+                    }
 
-                // shorten path
-                if (path!!.isNotEmpty() && forklift.pos.distanceTo(this) < 0.25) {
-                    // we are close enough, go to the next one
-                    path = path!!.subList(1, path!!.size)
+                    val turn = driveTowards(this - forklift.pos, forklift.facing)
+
+                    val pickup = forklift.pos.distanceTo(targetPickup!!.pos) < PACKAGE_PICKUP_RADIUS
+
+                    if(pickup){
+                        targetPickup = null
+                        path = null
+                    }
+
+                    return Control(
+                        forward = 1.0,
+                        turn = turn,
+                        pickUp = pickup,
+                        place = false
+                    )
                 }
-
-                val turn = driveTowards(this - forklift.pos, forklift.facing)
-
-                return Control(
-                    forward =1.0,
-                    turn = turn,
-                    pickUp = forklift.pos.distanceTo(targetPickup!!.pos) < PACKAGE_PICKUP_RADIUS,
-                    place = false
-                )
             }
         } else {
             // we are carrying a package
@@ -95,8 +102,10 @@ class ForkliftAi : AI {
                 if (targetDropoff != null && path != null && path!!.isNotEmpty()) {
                     // drive that path
 
+                    val nextDest = path!!.firstOrNull() ?: targetDropoff
+
                     // shorten path
-                    if (forklift.pos.distanceTo(targetDropoff!!) < 0.25) {
+                    if (forklift.pos.distanceTo(nextDest!!) < 0.25) {
                         // we are close enough, go to the next one
                         path = path!!.subList(1, path!!.size)
                     }
@@ -112,7 +121,7 @@ class ForkliftAi : AI {
                         pickUp = false,
                         place = forklift.calculateEndEffector().distanceTo(dest) < PACKAGE_PICKUP_RADIUS,
                     )
-                }else{
+                } else {
                     val spotToPutIt = sensor.findNearestEmptyShelf(forklift.pos.toIntRep())
                     if (spotToPutIt != null) {
 
@@ -130,7 +139,7 @@ class ForkliftAi : AI {
         }
 
 
-        // If it doesnt, we need to store it
+        // If it doesn't, we need to store it
 
         // find one we need to move, that will either be one in
 

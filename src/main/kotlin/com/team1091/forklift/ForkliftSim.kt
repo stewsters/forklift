@@ -51,6 +51,13 @@ class ForkliftSim : PApplet() {
 
         // Add your ais here
         val ais = listOf(
+            ForkliftAi(),
+            ForkliftAi(),
+            ForkliftAi(),
+            ForkliftAi(),
+            ForkliftAi(),
+            ForkliftAi(),
+            ForkliftAi(),
             ForkliftAi()
         )
         game = makeGame(ais)
@@ -155,7 +162,6 @@ fun makeGame(ais: List<AI>): Game {
     )
 
     var packageId = 0
-    // TODO: half of loading zones have packages, half need packages
     val pallets = zones.flatMap { zone ->
         zone.area.allPoints()
     }.map {
@@ -165,12 +171,23 @@ fun makeGame(ais: List<AI>): Game {
         )
     }.toMutableList()
 
+    val validStartLocations = mutableListOf<Vec2d>()
+    terrain.forEachIndexed { x, y, t ->
+        if (terrain[x, y] == TileType.FLOOR) validStartLocations.add(
+            Vec2d(
+                x + 0.5,
+                y + 0.5
+            )
+        )
+    }
+    validStartLocations.shuffle()
+
     val game = Game(
         bounds = rectangle,
         terrain = terrain,
         forklifts = ais.shuffled().mapIndexed { i, ai ->
             val angle = Random.nextDouble(Math.PI * 2)
-            val pos = Vec2d(1 + i.toDouble(), 1 + i.toDouble())
+            val pos = validStartLocations[i]
 
             Forklift(
                 ai = ai,

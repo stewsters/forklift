@@ -10,7 +10,7 @@ import kaiju.math.getEuclideanDistance
 import kaiju.pathfinder.findPath2d
 
 data class Sensor(
-    val map: Matrix2d<TileType>,
+    val terrain: Matrix2d<TileType>,
     val forklifts: List<Forklift>,
     val pallets: List<Pallet>,
     val loadingZones: List<LoadingZone>,
@@ -29,10 +29,10 @@ data class Sensor(
 
     fun findPath(start: Vec2, end: Vec2): List<Vec2>? =
         findPath2d(
-            map.getSize(),
+            terrain.getSize(),
             cost = { 1.0 },
             heuristic = { p1, p2 -> getEuclideanDistance(p1, p2) },
-            neighbors = { it.vonNeumanNeighborhood() },
+            neighbors = { it.vonNeumanNeighborhood().filter { terrain.contains(it) && terrain[it].canMove } },
             start = start,
             end = end
         )

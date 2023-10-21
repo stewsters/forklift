@@ -2,14 +2,15 @@ package com.team1091.forklift.ai
 
 import com.team1091.forklift.Control
 import com.team1091.forklift.Line
+import com.team1091.forklift.PACKAGE_PICKUP_RADIUS
 import com.team1091.forklift.Sensor
 import com.team1091.forklift.Vec2d
 import com.team1091.forklift.entity.Forklift
 import com.team1091.forklift.entity.Pallet
 import com.team1091.forklift.facingDist
 import com.team1091.forklift.intersection
+import com.team1091.forklift.toCenter
 import com.team1091.forklift.turnLeftOrRight
-import kaiju.math.Vec2
 import kotlin.math.abs
 
 
@@ -18,7 +19,7 @@ class ForkliftAi : AI {
 //    private val memory = mutableMapOf<Forklift, Vec2d>()
 
     private var targetPickup: Pallet? = null
-    private var path: List<Vec2>? = null
+    private var path: List<Vec2d>? = null
 
     override fun act(sensor: Sensor, forklift: Forklift): Control {
 
@@ -38,18 +39,61 @@ class ForkliftAi : AI {
             // in a loading zone
             // should not be
 
-            sensor.misplacedPackages()
+            if (targetPickup == null) {
+                val misplacedPackages = sensor.misplacedPackages()
+                val packageToGrab = misplacedPackages.minByOrNull { it.pos.distanceTo(forklift.pos) }
 
-            val misplacedPackages = sensor.misplacedPackages()
-            val packageToGrab = misplacedPackages.minByOrNull { it.pos.distanceTo(forklift.pos) }
-
-            if (packageToGrab != null) {
-                val possiblePath = sensor.findPath(forklift.pos.toIntRep(), packageToGrab.pos.toIntRep())
-                if (possiblePath != null) {
-                    path = possiblePath
-                    targetPickup = packageToGrab
+                if (packageToGrab != null) {
+                    val possiblePath = sensor.findPath(forklift.pos.toIntRep(), packageToGrab.pos.toIntRep())
+                    if (possiblePath != null) {
+                        path = possiblePath.map { it.toCenter() }
+                        targetPickup = packageToGrab
+                    }
                 }
             }
+
+            (path?.firstOrNull() ?: targetPickup?.pos)?.apply {
+
+                // shorten path
+                if (path!!.isNotEmpty() && forklift.pos.distanceTo(this) < 0.25) {
+                    // we are close enough, go to the next one
+                    path = path!!.subList(1, path!!.size)
+                }
+
+                val turn = driveTowards(this - forklift.pos, forklift.facing)
+
+                return Control(
+                    forward = 1.0,
+                    turn = turn,
+                    pickUp = forklift.pos.distanceTo(targetPickup!!.pos) < PACKAGE_PICKUP_RADIUS,
+                    place = false
+                )
+            }
+        } else {
+            // we are carrying a package
+            // Does that package have a destination?  if so, put it there
+            val orderId = sensor.orders[forklift.carrying]
+            if (orderId != null) {
+                // we need to get this package to a loading zone
+
+                val destinationZone = sensor.loadingZones.find { it.id == orderId }
+
+                if (path == null && destinationZone != null) { // path to destination
+
+                    val possiblePath = sensor.findPath(forklift.pos.toIntRep(), destinationZone.area.center())
+                    if (possiblePath != null) {
+                        path = possiblePath.map { it.toCenter() }
+                        targetPickup = null
+                    }
+
+
+                }
+
+
+            }
+
+
+            // If it doesnt, we need to store it
         }
 
 
@@ -63,8 +107,8 @@ class ForkliftAi : AI {
 
 
         return Control(
-            forward = 1.0,
-            turn = 0.5,
+            forward = 0.1,
+            turn = -0.1,
             pickUp = false,
             place = false
         )

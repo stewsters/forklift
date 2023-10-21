@@ -1,5 +1,6 @@
 package com.team1091.forklift
 
+import kaiju.math.Vec2
 import kotlin.math.abs
 import kotlin.math.cos
 import kotlin.math.max
@@ -132,4 +133,8 @@ fun intersection(a: Line, b: Line): Vec2d? {
 
 fun Double.limit(): Double {
     return max(-1.0, min(1.0, this))
+}
+
+fun Vec2.toCenter(): Vec2d {
+    return Vec2d(this.x + 0.5, this.y + 0.5)
 }

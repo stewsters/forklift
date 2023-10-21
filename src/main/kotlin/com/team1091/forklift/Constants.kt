@@ -1,6 +1,8 @@
 package com.team1091.forklift
 
-const val PACKAGE_PICKUP_RADIUS = 8.0
+const val FORKLIFT_PICKUP_DISTANCE = 0.25
+const val PACKAGE_PICKUP_RADIUS = 0.25
+
 const val FORKLIFT_SPEED = 0.6
 const val FORKLIFT_VACUUM_SLOW = 0.6
 const val FORKLIFT_TURN_RATE = 2.0

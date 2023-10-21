@@ -28,7 +28,7 @@ class Game(
             val control = try {
                 forklift.ai.act(
                     Sensor(
-                        map = terrain,
+                        terrain = terrain,
                         forklifts = forklifts.filter { it != forklift },
                         pallets = pallets.toList(),
                         loadingZones = loadingZones,
@@ -62,33 +62,10 @@ class Game(
             if (bounds.inside(newPos) && terrain[newPos].canMove) {
                 forklift.pos = newPos
             }
-            // TODO: collision with terrain
-
-
-//            // fire
-//            // spawn bullet
-//            if (control.fire && forklift.ammoCount > 0 && forklift.lastFired + TIME_TO_FIRE < currentTime) {
-//                // calculate barrel position
-//                val barrelEnd = Vec2d(
-//                    forklift.pos.x + cos(forklift.facing + forklift.turretFacing) * TANK_BARREL_LENGTH,
-//                    forklift.pos.y + sin(forklift.facing + forklift.turretFacing) * TANK_BARREL_LENGTH
-//                )
-//                projectiles.add(
-//                    Projectile(
-//                        pos = barrelEnd,
-//                        facing = forklift.facing + forklift.turretFacing,
-//                        launchTime = currentTime
-//                    )
-//                )
-//                forklift.ammoCount--
-//                forklift.lastFired = currentTime
-//            }
 
             if (control.pickUp && forklift.carrying == null) {
-                // grab any pickups we are on
-//                val capacity = TANK_MAX_AMMO - forklift.ammoCount
 
-                val pickupPos = forklift.pos + FORWARD.rotate(forklift.facing)
+                val pickupPos = forklift.pos + FORWARD.times(FORKLIFT_PICKUP_DISTANCE).rotate(forklift.facing)
                 val pickedUp = pallets.firstOrNull { it.pos.distanceTo(pickupPos) < PACKAGE_PICKUP_RADIUS }
 
                 if (pickedUp != null) {

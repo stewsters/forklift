@@ -1,6 +1,7 @@
 package com.team1091.forklift.ai
 
 import com.team1091.forklift.Control
+import com.team1091.forklift.FORKLIFT_PICKUP_DISTANCE
 import com.team1091.forklift.Line
 import com.team1091.forklift.PACKAGE_PICKUP_RADIUS
 import com.team1091.forklift.Sensor
@@ -19,6 +20,7 @@ class ForkliftAi : AI {
 //    private val memory = mutableMapOf<Forklift, Vec2d>()
 
     private var targetPickup: Pallet? = null
+    private var targetDropoff: Vec2d? = null
     private var path: List<Vec2d>? = null
 
     override fun act(sensor: Sensor, forklift: Forklift): Control {
@@ -63,7 +65,7 @@ class ForkliftAi : AI {
                 val turn = driveTowards(this - forklift.pos, forklift.facing)
 
                 return Control(
-                    forward = 1.0,
+                    forward =1.0,
                     turn = turn,
                     pickUp = forklift.pos.distanceTo(targetPickup!!.pos) < PACKAGE_PICKUP_RADIUS,
                     place = false
@@ -84,18 +86,51 @@ class ForkliftAi : AI {
                     if (possiblePath != null) {
                         path = possiblePath.map { it.toCenter() }
                         targetPickup = null
+                        targetDropoff = null
+                    }
+                }
+            } else { // This package has nowhere to go, find a shelf and drop it there
+
+
+                if (targetDropoff != null && path != null && path!!.isNotEmpty()) {
+                    // drive that path
+
+                    // shorten path
+                    if (forklift.pos.distanceTo(targetDropoff!!) < 0.25) {
+                        // we are close enough, go to the next one
+                        path = path!!.subList(1, path!!.size)
                     }
 
 
+                    val dest = path!!.firstOrNull() ?: targetDropoff!!
+
+                    val turn = driveTowards(dest - forklift.pos, forklift.facing)
+
+                    return Control(
+                        forward = 0.25,// forklift.pos.distanceTo(dest) - FORKLIFT_PICKUP_DISTANCE,
+                        turn = turn,
+                        pickUp = false,
+                        place = forklift.calculateEndEffector().distanceTo(dest) < PACKAGE_PICKUP_RADIUS,
+                    )
+                }else{
+                    val spotToPutIt = sensor.findNearestEmptyShelf(forklift.pos.toIntRep())
+                    if (spotToPutIt != null) {
+
+                        val possiblePath = sensor.findPathIgnoringLast(forklift.pos.toIntRep(), spotToPutIt)
+                        if (possiblePath != null) {
+                            path = possiblePath.map { it.toCenter() }
+                            targetDropoff = spotToPutIt.toCenter()
+                            targetPickup = null
+                        }
+                    }
                 }
-
-
             }
 
 
-            // If it doesnt, we need to store it
         }
 
+
+        // If it doesnt, we need to store it
 
         // find one we need to move, that will either be one in
 
@@ -112,88 +147,6 @@ class ForkliftAi : AI {
             pickUp = false,
             place = false
         )
-
-
-//        val closestEnemy = sensor.targets
-//            .filter { it.pos.distanceTo(forklift.pos) > TANK_BARREL_LENGTH }
-//            .minByOrNull { it.pos.distanceTo(forklift.pos) }
-//        val closestPickup = sensor.packages
-//            .filter { closestEnemy != null && it.pos.distanceTo(forklift.pos) <= it.pos.distanceTo(closestEnemy.pos) }
-//            .minByOrNull { it.pos.distanceTo(forklift.pos) }
-//
-//        val closestProjectile = sensor.projectiles
-//            .filter { it.pos.distanceTo(forklift.pos) < MAX_PROJECTILE_DIST }
-//            .filter { (forklift.pos - it.pos).rotate(-it.facing).x > 0 } // in front of us
-//            .filter {
-//                distanceToLine(
-//                    forklift.pos,
-//                    it.pos,
-//                    it.pos + facingDist(it.facing, MAX_PROJECTILE_DODGE_DIST)
-//                ) < MAX_PROJECTILE_DIST
-//            } // in front of us
-//            .minByOrNull { it.pos.distanceTo(forklift.pos) }
-//
-//        var turn = 0.0
-//        var turnTurret = 0.0
-//        var forward = 1.0
-//
-//
-//        // Control driving
-//        if (closestProjectile != null) {
-//            // if the closest projectile is within range, dodge
-//            turn = turnHorizontal(forklift.facing, closestProjectile.facing)
-//            forward = driveDodge(forklift.pos, forklift.facing, closestProjectile.pos, closestProjectile.facing)
-//        } else if (closestPickup != null && forklift.ammoCount < TANK_MAX_AMMO) {
-//            // else gather ammo i
-//            turn = driveTowards(closestPickup.pos - forklift.pos, forklift.facing)
-//        } else if (closestEnemy != null) {
-//            // we are full, time to hunt
-//            turn = driveTowards(closestEnemy.pos - forklift.pos, forklift.facing)
-//        }
-//
-//        // if both the enemy is in range and we have ammo then light em up
-//        // point turret at enemy
-//        var targetIntercept: Vec2d? = null
-//        if (closestEnemy != null) {
-//            val rememberedPos = memory[closestEnemy]
-//            if (rememberedPos != null) {
-//                val targetVel = (closestEnemy.pos - rememberedPos) * (FRAMES_PER_SECOND)
-//
-//                targetIntercept = calculateAimPoint(
-//                    targetPos = closestEnemy.pos,
-//                    targetVel = targetVel,
-//                    shooterPos = forklift.pos,
-//                    projectileSpeed = PROJECTILE_VELOCITY
-//                )
-//
-//                targetIntercept?.let {
-//                    turnTurret =
-//                        driveTowards(
-//                            it - forklift.pos,
-//                            forklift.facing + forklift.turretFacing
-//                        ) - (turn * SECONDS_PER_FRAME * TANK_TURN_RATE)
-//                }
-//            } else {
-//                targetIntercept = closestEnemy.pos
-//                turnTurret = driveTowards(
-//                    closestEnemy.pos - forklift.pos,
-//                    forklift.facing + forklift.turretFacing
-//                ) - (turn * SECONDS_PER_FRAME * TANK_TURN_RATE)
-//            }
-//        }
-//
-//        // Reset the memory
-//        memory.clear()
-//        sensor.targets.forEach { memory[it] = it.pos }
-//
-//        return Control(
-//            forward = forward,
-//            turn = turn,
-//            turnTurret = turnTurret,
-//            fire = targetIntercept != null && targetIntercept.distanceTo(forklift.pos) < MAX_SHOT_TAKE_DISTANCE,
-//            collect = closestPickup != null && closestPickup.pos.distanceTo(forklift.pos) < TANK_PICKUP_RADIUS,
-//            target = targetIntercept
-//        )
     }
 
     private fun driveTowards(offset: Vec2d, facing: Double): Double {

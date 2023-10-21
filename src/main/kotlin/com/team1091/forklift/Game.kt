@@ -65,7 +65,7 @@ class Game(
 
             if (control.pickUp && forklift.carrying == null) {
 
-                val pickupPos = forklift.pos + FORWARD.times(FORKLIFT_PICKUP_DISTANCE).rotate(forklift.facing)
+                val pickupPos = forklift.calculateEndEffector()
                 val pickedUp = pallets.firstOrNull { it.pos.distanceTo(pickupPos) < PACKAGE_PICKUP_RADIUS }
 
                 if (pickedUp != null) {
@@ -76,10 +76,10 @@ class Game(
             }
 
             if (control.place && forklift.carrying != null) {
-                val pickupPos = forklift.pos + FORWARD.rotate(forklift.facing)
+                val endOfFork =  forklift.calculateEndEffector()
                 val pack = forklift.carrying!!
-                if (terrain[pickupPos].canHold) {
-                    pack.pos = pickupPos
+                if (terrain.contains(endOfFork.toIntRep()) && terrain[endOfFork].canHold) {
+                    pack.pos = endOfFork
                     pallets.add(pack)
                     forklift.carrying = null
                 }

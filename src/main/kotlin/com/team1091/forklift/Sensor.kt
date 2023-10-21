@@ -37,4 +37,19 @@ data class Sensor(
             end = end
         )
 
+    fun findPathIgnoringLast(start: Vec2, end: Vec2): List<Vec2>? =
+        findPath2d(
+            terrain.getSize(),
+            cost = { 1.0 },
+            heuristic = { p1, p2 -> getEuclideanDistance(p1, p2) },
+            neighbors = { it.vonNeumanNeighborhood().filter { terrain.contains(it) && (terrain[it].canMove || it == end ) } },
+            start = start,
+            end = end
+        )
+
+
+    fun findNearestEmptyShelf(start: Vec2): Vec2? = findMatchingCoordinates(terrain) { x, y, t ->
+        t == TileType.SHELF && pallets.none { it.pos.x.toInt() == x && it.pos.y.toInt() == x }
+    }.minByOrNull { p -> getEuclideanDistance(start, p) }
+
 }

@@ -10,6 +10,7 @@ import kaiju.mapgen.two.fill
 import kaiju.mapgen.two.fillWithBorder
 import kaiju.mapgen.two.predicate.and
 import kaiju.mapgen.two.predicate.notNearCell
+import kaiju.math.Matrix2d
 import kaiju.math.Vec2
 import kaiju.math.geom.Rectangle
 import kaiju.math.matrix2dOf
@@ -171,23 +172,16 @@ fun makeGame(ais: List<AI>): Game {
         )
     }.toMutableList()
 
-    val validStartLocations = mutableListOf<Vec2d>()
-    terrain.forEachIndexed { x, y, t ->
-        if (terrain[x, y] == TileType.FLOOR) validStartLocations.add(
-            Vec2d(
-                x + 0.5,
-                y + 0.5
-            )
-        )
-    }
-    validStartLocations.shuffle()
+    val validStartLocations = findMatchingCoordinates(terrain){x,y,t->
+        t == TileType.FLOOR
+    }.shuffled()
 
     val game = Game(
         bounds = rectangle,
         terrain = terrain,
         forklifts = ais.shuffled().mapIndexed { i, ai ->
             val angle = Random.nextDouble(Math.PI * 2)
-            val pos = validStartLocations[i]
+            val pos = validStartLocations[i].toCenter()
 
             Forklift(
                 ai = ai,
@@ -201,6 +195,17 @@ fun makeGame(ais: List<AI>): Game {
     )
 
     return game
+}
+
+fun findMatchingCoordinates(terrain: Matrix2d<TileType>, predicate:(Int,Int,TileType)->Boolean): List<Vec2> {
+    val validStartLocations = mutableListOf<Vec2>()
+    terrain.forEachIndexed { x, y, t ->
+        if (predicate(x, y, t))
+            validStartLocations.add(
+                Vec2(x, y)
+            )
+    }
+    return validStartLocations
 }
 
 private fun Rectangle.allPoints(): List<Vec2> {

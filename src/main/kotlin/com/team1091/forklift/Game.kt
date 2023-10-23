@@ -106,7 +106,7 @@ class Game(
         loadingZones.forEach { zone ->
 
             val requiredPallets = orders.filter { it.value == zone.id }.map { it.key }
-            if(requiredPallets.isEmpty())
+            if (requiredPallets.isEmpty())
                 return@forEach
 
             val palletsHere = pallets.filter { zone.area.contains(it.pos) }

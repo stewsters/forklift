@@ -172,7 +172,7 @@ fun makeGame(ais: List<AI>): Game {
         )
     }.toMutableList()
 
-    val validStartLocations = findMatchingCoordinates(terrain){x,y,t->
+    val validStartLocations = findMatchingCoordinates(terrain) { x, y, t ->
         t == TileType.FLOOR
     }.shuffled()
 
@@ -197,7 +197,7 @@ fun makeGame(ais: List<AI>): Game {
     return game
 }
 
-fun findMatchingCoordinates(terrain: Matrix2d<TileType>, predicate:(Int,Int,TileType)->Boolean): List<Vec2> {
+fun findMatchingCoordinates(terrain: Matrix2d<TileType>, predicate: (Int, Int, TileType) -> Boolean): List<Vec2> {
     val validStartLocations = mutableListOf<Vec2>()
     terrain.forEachIndexed { x, y, t ->
         if (predicate(x, y, t))

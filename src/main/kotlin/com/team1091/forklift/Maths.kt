@@ -141,5 +141,5 @@ fun Vec2.toCenter(): Vec2d {
 }
 
 fun Rectangle.contains(p: Vec2d): Boolean {
-    return contains(p.x.toInt(),p.y.toInt())
+    return contains(p.x.toInt(), p.y.toInt())
 }

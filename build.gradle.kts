@@ -16,7 +16,7 @@ repositories {
 dependencies {
     testImplementation(kotlin("test"))
     implementation("org.processing:core:3.3.7")
-    implementation ("com.github.stewsters:kaiju:1.5")
+    implementation("com.github.stewsters:kaiju:1.5")
 }
 
 application {

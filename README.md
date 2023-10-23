@@ -1,33 +1,38 @@
 # Forklift
+
 A forklift sim game.
 
 In this game, you write an AI to control a robot forklift and deliver packages.
 
-
 ## Getting started
+
 ### Prereqs
+
 You will need to install a few things to get this working.
 
- * an editor (I recommend Intellij Community) 
- * a git client - we use this to share code.
- * a JDK (intellij can install this for you, or we can manually set it up) 
+* an editor (I recommend Intellij Community)
+* a git client - we use this to share code.
+* a JDK (intellij can install this for you, or we can manually set it up)
 
 ### Getting running
+
 Make a local copy of the project
+
 ```bash
 git clone https://github.com/stewsters/forklift.git
 ```
 
-Then open it in intellij.  It will download the dependencies which will take a minute or two.
+Then open it in intellij. It will download the dependencies which will take a minute or two.
 To run it open the gradle window on the right side, and hit tasks>application>run
 
 If it works, you should see some forklifts driving.
 
 ### Create an AI
 
-Add that AI to the ai list in ForkliftSim.kt.  Try running it again and see if that forklift appears.
+Add that AI to the ai list in ForkliftSim.kt. Try running it again and see if that forklift appears.
 
 ### The AI
+
 You will get some input each frame and have to return a Control object with what you want to do this frame.
 
 ```kotlin
@@ -52,7 +57,7 @@ You will get some input each frame and have to return a Control object with what
 
 Often when you are presented with a complicated programming problem it can be a bit overwhelming.
 
-It makes sense to break it down and get one thing working at a time. 
+It makes sense to break it down and get one thing working at a time.
 
 There are a few things you will likely want to handle first:
 

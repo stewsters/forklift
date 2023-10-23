@@ -13,6 +13,13 @@ import com.team1091.forklift.toCenter
 import com.team1091.forklift.turnLeftOrRight
 import kotlin.math.abs
 
+// Controller with a planner
+
+// State machine / command pattern
+// Wait for orders (spread out into unused parts? go charge?)
+// Move package (source, destination)
+//
+
 
 class ForkliftAi : AI {
 
@@ -32,14 +39,10 @@ class ForkliftAi : AI {
 
         // if we dont know where it goes, store it somewhere
 
-
         // if we have no package, lets be useful.
         // go get one and store it
         if (forklift.carrying == null) {
-            // find all packages that are
-            // in a loading zone
-            // should not be
-
+            // find all packages that are in a loading zone but should not be
             if (targetPickup == null) {
                 val misplacedPackages = sensor.misplacedPackages()
                 val packageToGrab = misplacedPackages.minByOrNull { it.pos.distanceTo(forklift.pos) }
@@ -65,7 +68,7 @@ class ForkliftAi : AI {
 
                     val pickup = forklift.pos.distanceTo(targetPickup!!.pos) < PACKAGE_PICKUP_RADIUS
 
-                    if(pickup){
+                    if (pickup) {
                         targetPickup = null
                         path = null
                     }
@@ -84,7 +87,6 @@ class ForkliftAi : AI {
             val orderId = sensor.orders[forklift.carrying]
             if (orderId != null) {
                 // we need to get this package to a loading zone
-
                 val destinationZone = sensor.loadingZones.find { it.id == orderId }
 
                 if (path == null && destinationZone != null) { // path to destination
@@ -95,6 +97,25 @@ class ForkliftAi : AI {
                         targetPickup = null
                         targetDropoff = null
                     }
+                } else if (path != null) {
+
+                    val nextDest = path!!.firstOrNull() ?: destinationZone?.area?.center()?.toCenter()
+
+                    // shorten path
+                    if (forklift.pos.distanceTo(nextDest!!) < 0.25) {
+                        // we are close enough, go to the next one
+                        path = path!!.subList(1, path!!.size)
+                    }
+
+                    val dest = path!!.firstOrNull() ?: targetDropoff!!
+
+                    return Control(
+                        forward = 0.25,// forklift.pos.distanceTo(dest) - FORKLIFT_PICKUP_DISTANCE,
+                        turn = driveTowards(dest - forklift.pos, forklift.facing),
+                        pickUp = false,
+                        place = forklift.calculateEndEffector().distanceTo(dest) < PACKAGE_PICKUP_RADIUS,
+                    )
+
                 }
             } else { // This package has nowhere to go, find a shelf and drop it there
 
@@ -110,14 +131,11 @@ class ForkliftAi : AI {
                         path = path!!.subList(1, path!!.size)
                     }
 
-
                     val dest = path!!.firstOrNull() ?: targetDropoff!!
-
-                    val turn = driveTowards(dest - forklift.pos, forklift.facing)
 
                     return Control(
                         forward = 0.25,// forklift.pos.distanceTo(dest) - FORKLIFT_PICKUP_DISTANCE,
-                        turn = turn,
+                        turn = driveTowards(dest - forklift.pos, forklift.facing),
                         pickUp = false,
                         place = forklift.calculateEndEffector().distanceTo(dest) < PACKAGE_PICKUP_RADIUS,
                     )

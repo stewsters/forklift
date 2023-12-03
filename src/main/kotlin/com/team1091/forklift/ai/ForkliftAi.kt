@@ -1,17 +1,15 @@
 package com.team1091.forklift.ai
 
 import com.team1091.forklift.Control
-import com.team1091.forklift.Line
 import com.team1091.forklift.PACKAGE_PICKUP_RADIUS
 import com.team1091.forklift.Sensor
 import com.team1091.forklift.Vec2d
+import com.team1091.forklift.ai.commands.Commands
+import com.team1091.forklift.ai.commands.Continue
+import com.team1091.forklift.ai.commands.ForkliftCommand
 import com.team1091.forklift.entity.Forklift
 import com.team1091.forklift.entity.Pallet
-import com.team1091.forklift.facingDist
-import com.team1091.forklift.intersection
 import com.team1091.forklift.toCenter
-import com.team1091.forklift.turnLeftOrRight
-import kotlin.math.abs
 
 // Controller with a planner
 
@@ -28,6 +26,9 @@ class ForkliftAi : AI {
     private var targetPickup: Pallet? = null
     private var targetDropoff: Vec2d? = null
     private var path: List<Vec2d>? = null
+
+    private var forkliftState: ForkliftCommand = generateInitialState()
+
 
     override fun act(sensor: Sensor, forklift: Forklift): Control {
 
@@ -185,33 +186,72 @@ class ForkliftAi : AI {
         }
     }
 
-    private fun turnHorizontal(tankFacing: Double, projectileFacing: Double): Double {
+//    private fun turnHorizontal(tankFacing: Double, projectileFacing: Double): Double {
+//
+//        val one = turnLeftOrRight(tankFacing, projectileFacing + Math.PI / 2)
+//        val two = turnLeftOrRight(tankFacing, projectileFacing - Math.PI / 2)
+//
+//        return if (abs(one) < abs(two)) {
+//            one
+//        } else {
+//            two
+//        }
+//    }
+//
+//    // Forwards or backwards to dodge.
+//    private fun driveDodge(
+//        tankPos: Vec2d,
+//        tankFacing: Double,
+//        projectilePos: Vec2d,
+//        projectileFacing: Double
+//    ): Double {
+//
+//        val driveLine = Line(tankPos, tankPos + facingDist(tankFacing))
+//        val shotLine = Line(projectilePos, projectilePos + facingDist(projectileFacing))
+//
+//        val intersection = intersection(driveLine, shotLine) ?: return 1.0
+//
+//        // need to figure out if the intersection point is ahead or behind us
+//        return if ((intersection - tankPos).rotate(-tankFacing).x < 0) 1.0 else -1.0
+//    }
 
-        val one = turnLeftOrRight(tankFacing, projectileFacing + Math.PI / 2)
-        val two = turnLeftOrRight(tankFacing, projectileFacing - Math.PI / 2)
+}
 
-        return if (abs(one) < abs(two)) {
-            one
-        } else {
-            two
-        }
+
+// default should be to ask mother for instructions
+
+class DriveTo(
+    val dest: Vec2d
+) : ForkliftCommand {
+
+    override fun initialize() {
+        // todo: get path
+        // set to first step
     }
 
-    // Forwards or backwards to dodge.
-    private fun driveDodge(
-        tankPos: Vec2d,
-        tankFacing: Double,
-        projectilePos: Vec2d,
-        projectileFacing: Double
-    ): Double {
-
-        val driveLine = Line(tankPos, tankPos + facingDist(tankFacing))
-        val shotLine = Line(projectilePos, projectilePos + facingDist(projectileFacing))
-
-        val intersection = intersection(driveLine, shotLine) ?: return 1.0
-
-        // need to figure out if the intersection point is ahead or behind us
-        return if ((intersection - tankPos).rotate(-tankFacing).x < 0) 1.0 else -1.0
+    override fun act(sensor: Sensor, forklift: Forklift): Commands {
+        // drive from where we are to the destination
+        return Continue(Control(0.0, 0.0, false, false))
     }
 
+}
+
+// drive to a destination, drop it off
+
+
+// Drive to a target, pick it up
+// [driveto target, pickup]
+
+class GoPickUp() : ForkliftCommand {
+    override fun act(sensor: Sensor, forklift: Forklift): Commands {
+        // drive from where we are to the destination
+
+        return Continue( Control(0.0, 0.0, false, false))
+    }
+
+}
+
+
+private fun generateInitialState(): ForkliftCommand {
+    return GoPickUp();
 }

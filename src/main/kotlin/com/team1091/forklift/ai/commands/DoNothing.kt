@@ -4,16 +4,26 @@ import com.team1091.forklift.Control
 import com.team1091.forklift.Sensor
 import com.team1091.forklift.entity.Forklift
 
+
+
+
 class DoNothing : ForkliftCommand {
     override fun act(sensor: Sensor, forklift: Forklift): Commands {
 
-        return Continue(
-            Control(
-                forward = 0.0,
-                turn = 0.0,
-                pickUp = false,
-                place = false
-            )
+        return command
+    }
+
+    companion object{
+        val basis = Control(
+            forward = 0.0,
+            turn = 0.0,
+            pickUp = false,
+            place = false
         )
+
+        val command = Continue(
+            basis
+        )
+
     }
 }

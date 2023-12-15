@@ -109,6 +109,8 @@ class ForkliftAi : AI {
 
 private fun generateInitialState(forklift: Forklift, sensor: Sensor): ForkliftCommand {
 
+    // TODO: we probably should have a search to find our next move
+
     // if we know where it goes, drive there and drop
 
     // if we don't know where it goes, store it somewhere
@@ -165,7 +167,7 @@ private fun generateInitialState(forklift: Forklift, sensor: Sensor): ForkliftCo
         //
     }
 
-    return DoNothing()
+    return LookForWork()
 }
 
 
